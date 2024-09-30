@@ -1,4 +1,4 @@
-# Biblioteca Management System
+# Library Management System
 
 ## Descrição
 
@@ -11,7 +11,7 @@ Atualmente, o projeto possui:
 - **Views**: Interface de console que coleta os dados dos usuários e exibe as informações.
 - **Main**: Arquivo principal que inicializa o menu de navegação e as funcionalidades.
 
-## Funcionalidades Atuais
+## Funcionalidades Atuais (Em processo de upgrade)
 
 ### Gerenciamento de Livros
 
@@ -71,7 +71,7 @@ Este projeto será expandido com as seguintes melhorias:
 1. Clone o repositório:
 
 ```bash
-git clone https://github.com/seu-usuario/biblioteca-management.git
+git clone https://github.com/seu-usuario/library-management.git
 ```
 
 2. Instale as dependências:
