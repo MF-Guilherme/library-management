@@ -1,4 +1,4 @@
-# Biblioteca Management System
+# Library Management System
 
 ## Descrição
 
