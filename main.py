@@ -1,5 +1,5 @@
-from views import book_controller, user_controller
-import views
+from Views.views import book_controller, user_controller
+import Views.views as views
 
 book_options = {
     '1': views.book_register,

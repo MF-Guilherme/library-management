@@ -1,4 +1,4 @@
-from controllers import BookController, UserController
+from Controllers.controllers import BookController, UserController
 from prompt_toolkit import prompt
 
 book_controller = BookController()
@@ -65,7 +65,7 @@ def search_book(controller):
     print('-' * 50)
     book = controller.search_by_book_code(ipt_code)
     if book:
-        print(f'Title: {book.title} | Author: {book.author} | ISBN: {book.code}')
+        print(f' ISBN: {book.code} | Title: {book.title} | Author: {book.author} | Genre: {book.genre}')
     else:
         print('Book not found')
     

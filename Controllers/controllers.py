@@ -1,4 +1,4 @@
-from models import Book, User
+from Models.models import Book, User
 
 class BookController():
     def __init__(self) -> None:
