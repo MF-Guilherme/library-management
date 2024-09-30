@@ -5,6 +5,8 @@ class BookController():
         self.db = []
 
     def add_book(self, title, author, year, genre, code):
+        if not title or not author or not year or not genre or not code:
+            raise ValueError('Not registered! Please, enter all fields.')
         book = Book(title, author, year, genre, code)
         self.db.append(book)
 

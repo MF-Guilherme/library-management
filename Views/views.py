@@ -48,9 +48,12 @@ def get_book_infos():
     return title, author, year, genre, code
 
 def book_register(controller):
-    title, author, year, genre, code = get_book_infos()
-    controller.add_book(title, author, year, genre, code)
-    print('Book registered!')
+    try:
+        title, author, year, genre, code = get_book_infos()
+        controller.add_book(title, author, year, genre, code)
+        print('Book registered!')
+    except ValueError as e:
+        print(f'Error: {e}')
 
 def show_books(controller):
     books = controller.list_books()
