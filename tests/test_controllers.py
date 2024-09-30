@@ -1,6 +1,6 @@
-from Models.models import Book, User
 from Controllers.controllers import BookController, UserController
 import pytest
+
 
 
 def test_add_book_with_valid_data():
