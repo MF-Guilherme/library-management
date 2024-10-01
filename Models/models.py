@@ -1,5 +1,5 @@
 class Book():
-    def __init__(self, title, author, year, genre, code) -> None:
+    def __init__(self, title: str, author: str, year: int, genre: str, code: int) -> None:
         self.title = title
         self.author = author
         self.year = year
@@ -7,15 +7,15 @@ class Book():
         self.code = code
     
     def show_info(self):
-        return f'Title: {self.title} | Author: {self.author} | Publication Year: {self.year} | Genre: {self.genre} | ISBN code: {self.code}'
+        return f' ISBN code: {self.code} | Title: {self.title} | Author: {self.author} | Publication Year: {self.year} | Genre: {self.genre}'
             
 
 class User():
-    def __init__(self, name, email, phone, user_code) -> None:
+    def __init__(self, name: str, email: str, phone: str, user_code: int) -> None:
         self.name = name
         self.email = email
         self.phone = phone
         self.user_code = user_code
 
     def show_info(self):
-        return f'Name: {self.name} | E-mail: {self.email} | Phone: {self.phone} | User code: {self.user_code}'
+        return f' User code: {self.user_code} | Name: {self.name} | E-mail: {self.email} | Phone: {self.phone}'
