@@ -7,7 +7,8 @@ class BookController():
     def validate_book_fields(self, title, author, year, genre, code):
         # validate if any field is empty
         if not title or not author or not year or not genre or not code:
-            raise ValueError('Not registered! Please, enter all fields.')        
+            raise ValueError('Not registered! Please, enter all fields.')   
+             
         # validate if year and code are numerics
         if not year.isnumeric() and not code.isnumeric():
             raise ValueError('Not registered! The Publication Year and ISBN Code must contain numbers')
@@ -15,6 +16,15 @@ class BookController():
             raise ValueError('Not registered! Publication Year must contain a number')
         if not code.isnumeric():
             raise ValueError('Not registered! ISBN Code must contain a number')
+        
+        # validate if title, author and genre aren't just numbers
+        if title.isnumeric():
+            raise ValueError("Not registered! The Title field can't contain just numbers")
+        if author.isnumeric():
+            raise ValueError("Not registered! The Author field can't contain just numbers")
+        if genre.isnumeric():
+            raise ValueError("Not registered! The Literary genre field can't contain just numbers")
+
 
     def add_book(self, title, author, year, genre, code):
         self.validate_book_fields(title, author, year, genre, code)
