@@ -56,3 +56,7 @@ class TestBookController():
     def test_add_book_raises_ValueError_if_title_author_or_genre_are_not_strings(self, title, author, year, genre, code):
         with pytest.raises(ValueError):
             self.controller.add_book(title, author, year, genre, code)
+
+    def test_add_book_raises_ValueError_if_year_doesnt_less_than_or_equal_current_year(self):
+        with pytest.raises(ValueError):
+            self.controller.add_book('Some Title', 'Some Author', '2025', 'Some Genre', '123456')
