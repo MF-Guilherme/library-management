@@ -32,3 +32,15 @@ class TestBookController():
     def test_add_book_raises_ValueError_if_any_field_is_empty(self, title, author, year, genre, code):
         with pytest.raises(ValueError):
             self.controller.add_book(title, author, year, genre, code)        
+
+
+    @pytest.mark.parametrize(
+            "title, author, year, genre, code",
+            [
+                ('Some Title', 'Some Author', 'ABCD', 'Some Genre', '12345'), # year isn't numeric
+                ('Some Title', 'Some Author', '1900', 'Some Genre', 'ABCD'), # code isn't numeric
+            ]
+    )
+    def test_add_book_raises_ValueError_if_year_or_book_are_not_numeric(self, title, author, year, genre, code):
+        with pytest.raises(ValueError):
+            self.controller.add_book(title, author, year, genre, code)
