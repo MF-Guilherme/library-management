@@ -44,3 +44,15 @@ class TestBookController():
     def test_add_book_raises_ValueError_if_year_or_book_are_not_numeric(self, title, author, year, genre, code):
         with pytest.raises(ValueError):
             self.controller.add_book(title, author, year, genre, code)
+
+    @pytest.mark.parametrize(
+            "title, author, year, genre, code",
+            [
+                ('123456', 'Some Author', '1900', 'Some Genre', '12345'), # title isn't string
+                ('Some Title', '123456', '1900', 'Some Genre', '12345'), # author isn't string
+                ('Some Title', 'Some Author', '1900', '123456', '12345'), # genre isn't string
+            ]
+    )
+    def test_add_book_raises_ValueError_if_title_author_or_genre_are_not_strings(self, title, author, year, genre, code):
+        with pytest.raises(ValueError):
+            self.controller.add_book(title, author, year, genre, code)
