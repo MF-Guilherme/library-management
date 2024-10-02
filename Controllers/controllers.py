@@ -1,12 +1,47 @@
 from Models.models import Book, User
+from datetime import datetime
 
 class BookController():
     def __init__(self) -> None:
         self.db = []
 
-    def add_book(self, title, author, year, genre, code):
+    def validate_empty_fields(self, title, author, year, genre, code):
+        # validate if any field is empty
         if not title or not author or not year or not genre or not code:
             raise ValueError('Not registered! Please, enter all fields.')
+    
+    def validate_numeric_fields(self, year, code):
+        # validate if year and code are numerics
+        if not year.isnumeric() and not code.isnumeric():
+            raise ValueError('Not registered! The Publication Year and ISBN Code must contain numbers')
+        if not year.isnumeric():
+            raise ValueError('Not registered! Publication Year must contain a number')
+        if not code.isnumeric():
+            raise ValueError('Not registered! ISBN Code must contain a number')
+
+    def validate_non_numeric_fields(self, title, author, genre):
+        # validate if title, author and genre aren't just numbers
+        if title.isnumeric():
+            raise ValueError("Not registered! The Title field can't contain just numbers")
+        if author.isnumeric():
+            raise ValueError("Not registered! The Author field can't contain just numbers")
+        if genre.isnumeric():
+            raise ValueError("Not registered! The Literary genre field can't contain just numbers")
+    
+    def validate_year_publication(self, year):
+        # validate if the year field is less than the current year
+        current_year = datetime.now().year
+        if int(year) > current_year:
+            raise ValueError("Not registered! Publication year must be less than or equal to the current year")    
+
+    def validate_book_fields(self, title, author, year, genre, code):
+        self.validate_empty_fields(title, author, year, genre, code)
+        self.validate_numeric_fields(year, code)
+        self.validate_non_numeric_fields(title, author, genre)
+        self.validate_year_publication(year)        
+
+    def add_book(self, title, author, year, genre, code):
+        self.validate_book_fields(title, author, year, genre, code)
         book = Book(title, author, year, genre, code)
         self.db.append(book)
 

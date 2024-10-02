@@ -32,3 +32,31 @@ class TestBookController():
     def test_add_book_raises_ValueError_if_any_field_is_empty(self, title, author, year, genre, code):
         with pytest.raises(ValueError):
             self.controller.add_book(title, author, year, genre, code)        
+
+
+    @pytest.mark.parametrize(
+            "title, author, year, genre, code",
+            [
+                ('Some Title', 'Some Author', 'ABCD', 'Some Genre', '12345'), # year isn't numeric
+                ('Some Title', 'Some Author', '1900', 'Some Genre', 'ABCD'), # code isn't numeric
+            ]
+    )
+    def test_add_book_raises_ValueError_if_year_or_book_are_not_numeric(self, title, author, year, genre, code):
+        with pytest.raises(ValueError):
+            self.controller.add_book(title, author, year, genre, code)
+
+    @pytest.mark.parametrize(
+            "title, author, year, genre, code",
+            [
+                ('123456', 'Some Author', '1900', 'Some Genre', '12345'), # title isn't string
+                ('Some Title', '123456', '1900', 'Some Genre', '12345'), # author isn't string
+                ('Some Title', 'Some Author', '1900', '123456', '12345'), # genre isn't string
+            ]
+    )
+    def test_add_book_raises_ValueError_if_title_author_or_genre_are_not_strings(self, title, author, year, genre, code):
+        with pytest.raises(ValueError):
+            self.controller.add_book(title, author, year, genre, code)
+
+    def test_add_book_raises_ValueError_if_year_doesnt_less_than_or_equal_current_year(self):
+        with pytest.raises(ValueError):
+            self.controller.add_book('Some Title', 'Some Author', '2025', 'Some Genre', '123456')
