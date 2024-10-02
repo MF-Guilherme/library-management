@@ -60,3 +60,7 @@ class TestBookController():
     def test_add_book_raises_ValueError_if_year_doesnt_less_than_or_equal_current_year(self):
         with pytest.raises(ValueError):
             self.controller.add_book('Some Title', 'Some Author', '2025', 'Some Genre', '123456')
+
+    def test_add_book_raises_ValueError_if_digits_in_year_field_are_less_than3(self):
+        with pytest.raises(ValueError):
+            self.controller.add_book('Some Title', 'Some Author', '99', 'Some Genre', '123456')
