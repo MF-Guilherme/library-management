@@ -32,7 +32,9 @@ class BookController():
         # validate if the year field is less than the current year
         current_year = datetime.now().year
         if int(year) > current_year:
-            raise ValueError("Not registered! Publication year must be less than or equal to the current year")    
+            raise ValueError("Not registered! Publication year must be less than or equal to the current year")
+        if len(year) < 3:
+            raise ValueError("Not registered! Publication year must contain at least 3 digits.")
 
     def validate_book_fields(self, title, author, year, genre, code):
         self.validate_empty_fields(title, author, year, genre, code)
