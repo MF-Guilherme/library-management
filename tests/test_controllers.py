@@ -5,8 +5,7 @@ class TestBookController():
     
     def setup_method(self):
         self.controller = BookController()
-        
-
+     
     def test_add_book_with_valid_data(self):
         self.controller.add_book('Some Title', 'Some Author', '1234', 'Some Genre', '123456')
         assert len(self.controller.db) == 1
@@ -17,7 +16,6 @@ class TestBookController():
         assert added_book.year == '1234'
         assert added_book.genre == 'Some Genre'
         assert added_book.code == '123456'
-
 
     @pytest.mark.parametrize(
             "title, author, year, genre, code",
@@ -32,7 +30,6 @@ class TestBookController():
     def test_add_book_raises_ValueError_if_any_field_is_empty(self, title, author, year, genre, code):
         with pytest.raises(ValueError):
             self.controller.add_book(title, author, year, genre, code)        
-
 
     @pytest.mark.parametrize(
             "title, author, year, genre, code",
@@ -64,3 +61,13 @@ class TestBookController():
     def test_add_book_raises_ValueError_if_digits_in_year_field_are_less_than3(self):
         with pytest.raises(ValueError):
             self.controller.add_book('Some Title', 'Some Author', '99', 'Some Genre', '123456')
+    
+    def test_list_books_returns_empty_list_when_no_books_are_added(self):
+        assert self.controller.list_books() == [], "Should return an empty list"
+    
+    def test_list_books_returns_list_of_books_after_adding_books(self):
+        self.controller.add_book('Some Title', 'Some Author', '1900', 'Some Genre', '123456')
+        self.controller.add_book('Some Title', 'Some Author', '1900', 'Some Genre', '789456')
+        book1 = self.controller.search_by_book_code('123456')
+        book2 = self.controller.search_by_book_code('789456')
+        assert self.controller.list_books() == [book1, book2], "The books list does not contain the expected books"
