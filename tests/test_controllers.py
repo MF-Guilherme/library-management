@@ -83,3 +83,12 @@ class TestBookController():
         book1 = setup_book.search_by_book_code('123456')
         book2 = setup_book.search_by_book_code('789465')
         assert setup_book.list_books() == [book1, book2], "The books list does not contain the expected books"
+
+    def test_search_book_by_code_returns_the_searched_book(self, setup_book):
+        book = setup_book.search_by_book_code('789465')
+        assert setup_book.list_books()[1] == book
+
+    def test_search_book_by_code_returns_none_if_doesnt_find_the_inputted_book_code(self, setup_book):
+        book = setup_book.search_by_book_code('456123')
+        assert book is None
+        
