@@ -92,8 +92,13 @@ class TestBookController():
         book = setup_book.search_by_book_code('456123')
         assert book is None
         
-    def test_delete_book_deletes_the_given_book(self, setup_book):
+    def test_delete_book_deletes_the_given_book_from_the_db(self, setup_book):
         book = setup_book.search_by_book_code('123456')
         setup_book.delete_book(book.code)
         list_books = setup_book.list_books()
         assert book not in list_books
+
+    def test_delete_book_returns_false_if_doesnt_find_the_searched_book(self, setup_book):
+        book_code = '111111'
+        ret = setup_book.delete_book(book_code)
+        assert ret is False
