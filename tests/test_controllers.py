@@ -12,6 +12,14 @@ class TestBookController():
         book_controller.add_book('Some Title', 'Some Author', '1900', 'Some Genre', '123456')
         book_controller.add_book('Another Title', 'Another Author', '2000', 'Another Genre', '789465')
         return book_controller
+
+    @pytest.fixture
+    def setup_books_update(self, book_controller):
+        book_controller.add_book('Original title', 'Original author', '1900', 'Original genre', '11111')
+        book_controller.add_book('Original title', 'Original author', '1900', 'Original genre', '22222')
+        book_controller.add_book('Original title', 'Original author', '1900', 'Original genre', '33333')
+        book_controller.add_book('Original title', 'Original author', '1900', 'Original genre', '44444')
+        return book_controller
         
     def test_add_book_with_valid_data(self, setup_book):
         controller = setup_book    
@@ -50,6 +58,7 @@ class TestBookController():
             [
                 ('Some Title', 'Some Author', 'ABCD', 'Some Genre', '12345'), # year isn't numeric
                 ('Some Title', 'Some Author', '1900', 'Some Genre', 'ABCD'), # code isn't numeric
+                ('Some Title', 'Some Author', 'ABCD', 'Some Genre', 'BCDA'), # year and code aren't numeric
             ]
     )
     def test_add_book_raises_ValueError_if_year_or_book_are_not_numeric(self, book_controller, title, author, year, genre, code):
@@ -102,3 +111,37 @@ class TestBookController():
         book_code = '111111'
         ret = setup_book.delete_book(book_code)
         assert ret is False
+
+    def test_update_book_with_valid_data(self, setup_book):
+        book = setup_book.search_by_book_code('123456')
+        update_return = setup_book.update_book(book.code, 'Updated title', 'Updated author', '2024', 'Updated genre')
+        updated_book = setup_book.search_by_book_code('123456')
+        
+        assert update_return is True
+        assert updated_book.title == 'Updated title'
+        assert updated_book.author == 'Updated author'
+        assert updated_book.year == '2024'
+        assert updated_book.genre == 'Updated genre'
+
+    @pytest.mark.parametrize(
+            "title, author, year, genre, code",
+            [
+                ('123465', 'Updated author', '2024', 'Updated genre', '11111'), # title numeric
+                ('Updated title', '123456', '2024', 'Updated genre', '22222'), # author numeric 
+                ('Updated title', 'Updated author', '2024', '123456', '44444'), # genre numeric
+
+                ('Updated title', 'Updated author', 'ABCD', 'Updated genre', '33333',), # year non numeric
+                ('Updated title', 'Updated author', '2025', 'Updated genre', '33333',), # year greatter than current year
+                ('Updated title', 'Updated author', '99', 'Updated genre', '33333',), # year less than current year
+            ]
+    )
+    def test_update_book_raises_ValueError_when_a_field_fails_data_validation(self, setup_books_update, title, author, year, genre, code):
+        book = setup_books_update.search_by_book_code(code)
+        assert book in setup_books_update.list_books(), "book must be register in database"
+
+        with pytest.raises(ValueError):
+            setup_books_update.update_book(code, title, author, year, genre)
+
+    def test_update_book_returns_none_when_doesnt_find_the_searched_book(self, setup_books_update):
+        update_return = setup_books_update.update_book('999999') # non-existent code
+        assert update_return is None
