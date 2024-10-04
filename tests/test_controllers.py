@@ -141,3 +141,7 @@ class TestBookController():
 
         with pytest.raises(ValueError):
             setup_books_update.update_book(code, title, author, year, genre)
+
+    def test_update_book_returns_none_when_doesnt_find_the_searched_book(self, setup_books_update):
+        update_return = setup_books_update.update_book('999999') # non-existent code
+        assert update_return is None
