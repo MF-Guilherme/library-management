@@ -58,6 +58,7 @@ class BookController():
 
     def update_book(self, code, title=None, author=None, year=None, genre=None):
         book = self.search_by_book_code(code)
+        self.validate_book_fields(title, author, year, genre, code)
         if book:
             if title:
                 book.title = title
