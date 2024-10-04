@@ -102,3 +102,14 @@ class TestBookController():
         book_code = '111111'
         ret = setup_book.delete_book(book_code)
         assert ret is False
+
+    def test_update_book_with_valid_data(self, setup_book):
+        book = setup_book.search_by_book_code('123456')
+        update_return = setup_book.update_book(book.code, 'Updated title', 'Updated author', '2024', 'Updated genre')
+        updated_book = setup_book.search_by_book_code('123456')
+        
+        assert update_return is True
+        assert updated_book.title == 'Updated title'
+        assert updated_book.author == 'Updated author'
+        assert updated_book.year == '2024'
+        assert updated_book.genre == 'Updated genre'
