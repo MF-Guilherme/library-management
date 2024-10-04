@@ -123,23 +123,20 @@ class TestBookController():
         assert updated_book.genre == 'Updated genre'
 
     @pytest.mark.parametrize(
-            "title, author, year, genre, code, expected_title, expected_author, expected_year, expected_genre",
+            "title, author, year, genre, code",
             [
-                ('', 'Updated author', '2024', 'Updated genre', '11111', 'Original title', 'Updated author', '2024', 'Updated genre' ), # title empty
-                ('Updated title', '', '2024', 'Updated genre', '22222', 'Updated title', 'Original author', '2024', 'Updated genre'), # author empty 
-                ('Updated title', 'Updated author', '', 'Updated genre', '33333', 'Updated title', 'Updated author', '1900', 'Updated genre'), # year empty
-                ('Updated title', 'Updated author', '2024', '', '44444', 'Updated title', 'Updated author', '2024', 'Original genre'), # genre empty
+                ('123465', 'Updated author', '2024', 'Updated genre', '11111'), # title numeric
+                ('Updated title', '123456', '2024', 'Updated genre', '22222'), # author numeric 
+                ('Updated title', 'Updated author', '2024', '123456', '44444'), # genre numeric
+
+                ('Updated title', 'Updated author', 'ABCD', 'Updated genre', '33333',), # year non numeric
+                ('Updated title', 'Updated author', '2025', 'Updated genre', '33333',), # year greatter than current year
+                ('Updated title', 'Updated author', '99', 'Updated genre', '33333',), # year less than current year
             ]
     )
-    def test_update_book_doesnt_changes_the_field_when_its_omitted(self, setup_books_update, title, author, year, genre, code, expected_title, expected_author, expected_year, expected_genre):
+    def test_update_book_raises_ValueError_when_a_field_fails_data_validation(self, setup_books_update, title, author, year, genre, code):
         book = setup_books_update.search_by_book_code(code)
         assert book in setup_books_update.list_books(), "book must be register in database"
 
-        setup_books_update.update_book(code, title, author, year, genre)
-
-        upated_book = setup_books_update.search_by_book_code(code)
-
-        assert upated_book.title == expected_title, f"Title should be {expected_title}"
-        assert upated_book.author == expected_author, f"Author should be {expected_author}"
-        assert upated_book.year == expected_year, f"Year should be {expected_year}"
-        assert upated_book.genre == expected_genre, f"Genre should be {expected_genre}"
+        with pytest.raises(ValueError):
+            setup_books_update.update_book(code, title, author, year, genre)
