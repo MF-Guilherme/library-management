@@ -12,6 +12,14 @@ class TestBookController():
         book_controller.add_book('Some Title', 'Some Author', '1900', 'Some Genre', '123456')
         book_controller.add_book('Another Title', 'Another Author', '2000', 'Another Genre', '789465')
         return book_controller
+
+    @pytest.fixture
+    def setup_books_update(self, book_controller):
+        book_controller.add_book('Original title', 'Original author', '1900', 'Original genre', '11111')
+        book_controller.add_book('Original title', 'Original author', '1900', 'Original genre', '22222')
+        book_controller.add_book('Original title', 'Original author', '1900', 'Original genre', '33333')
+        book_controller.add_book('Original title', 'Original author', '1900', 'Original genre', '44444')
+        return book_controller
         
     def test_add_book_with_valid_data(self, setup_book):
         controller = setup_book    
@@ -113,3 +121,25 @@ class TestBookController():
         assert updated_book.author == 'Updated author'
         assert updated_book.year == '2024'
         assert updated_book.genre == 'Updated genre'
+
+    @pytest.mark.parametrize(
+            "title, author, year, genre, code, expected_title, expected_author, expected_year, expected_genre",
+            [
+                ('', 'Updated author', '2024', 'Updated genre', '11111', 'Original title', 'Updated author', '2024', 'Updated genre' ), # title empty
+                ('Updated title', '', '2024', 'Updated genre', '22222', 'Updated title', 'Original author', '2024', 'Updated genre'), # author empty 
+                ('Updated title', 'Updated author', '', 'Updated genre', '33333', 'Updated title', 'Updated author', '1900', 'Updated genre'), # year empty
+                ('Updated title', 'Updated author', '2024', '', '44444', 'Updated title', 'Updated author', '2024', 'Original genre'), # genre empty
+            ]
+    )
+    def test_update_book_doesnt_changes_the_field_when_its_omitted(self, setup_books_update, title, author, year, genre, code, expected_title, expected_author, expected_year, expected_genre):
+        book = setup_books_update.search_by_book_code(code)
+        assert book in setup_books_update.list_books(), "book must be register in database"
+
+        setup_books_update.update_book(code, title, author, year, genre)
+
+        upated_book = setup_books_update.search_by_book_code(code)
+
+        assert upated_book.title == expected_title, f"Title should be {expected_title}"
+        assert upated_book.author == expected_author, f"Author should be {expected_author}"
+        assert upated_book.year == expected_year, f"Year should be {expected_year}"
+        assert upated_book.genre == expected_genre, f"Genre should be {expected_genre}"
