@@ -58,6 +58,7 @@ class TestBookController():
             [
                 ('Some Title', 'Some Author', 'ABCD', 'Some Genre', '12345'), # year isn't numeric
                 ('Some Title', 'Some Author', '1900', 'Some Genre', 'ABCD'), # code isn't numeric
+                ('Some Title', 'Some Author', 'ABCD', 'Some Genre', 'BCDA'), # year and code aren't numeric
             ]
     )
     def test_add_book_raises_ValueError_if_year_or_book_are_not_numeric(self, book_controller, title, author, year, genre, code):
