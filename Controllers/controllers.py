@@ -1,6 +1,7 @@
 from Models.models import Book, User
-from Exceptions.exceptions import DuplicateBookError, LenOfPhoneError
+from Exceptions.exceptions import DuplicateBookError, LenOfPhoneError, EmailFormatError
 from datetime import datetime
+import re
 
 class BookController():
     def __init__(self) -> None:
@@ -107,12 +108,18 @@ class UserController():
     def validate_len_phone(self, phone):
         if not len(phone) >= 10 or not len(phone) <= 11:
             raise LenOfPhoneError()
+
+    def validate_email_format(self, email):
+        regex = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
+        if not re.match(regex, email):
+            raise EmailFormatError(email)
         
     def validate_user_fields(self, name, email, phone, user_code):
         self.validate_empty_fields(name, email, phone, user_code)
         self.validate_non_numeric_fields(name, email)
         self.validate_numeric_fields(phone, user_code)
         self.validate_len_phone(phone)
+        self.validate_email_format(email)
     
     def register_user(self, name, email, phone, user_code):
         self.validate_user_fields(name, email, phone, user_code)
