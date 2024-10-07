@@ -1,5 +1,5 @@
 from Controllers.controllers import BookController, UserController
-from Exceptions.exceptions import DuplicateBookError
+from Exceptions.exceptions import DuplicateBookError, LenOfPhoneError
 import pytest
 
 class TestBookController():
@@ -199,4 +199,16 @@ class TestUserController():
     def test_register_user_raises_value_error_if_phone_and_user_code_arent_numerics(self, user_controller, name, email, phone, user_code):
         with pytest.raises(ValueError):
             user_controller.register_user(name, email, phone, user_code)
+
+    @pytest.mark.parametrize(
+            "name, email, phone, user_code",
+            [
+                ('Some Name', 'someemail@test.com', '1199999444444', '1000'), # phone with 12 numbers
+                ('Other Name', 'otheremail@test.com', '113333555', '1001'), # phone with 9 numbers
+            ]
+    )
+    def test_register_user_len_of_phone_is_ten_or_eleven(self, user_controller, name, email, phone, user_code):
+        with pytest.raises(LenOfPhoneError):
+            user_controller.register_user(name, email, phone, user_code)
+
 

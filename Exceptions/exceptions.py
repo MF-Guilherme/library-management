@@ -5,3 +5,9 @@ class DuplicateBookError(Exception):
         self.entity = entity
         self.message = f"{self.entity} with code {self.code} already exists."
         super().__init__(self.message)
+
+class LenOfPhoneError(Exception):
+    """Raised when the phone number doesn't have 10 or 11 characters"""
+    def __init__(self):
+        self.message = "The phone number must contain 10 or 11 numbers without any other characters."
+        super().__init__(self.message)
