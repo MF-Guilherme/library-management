@@ -1,4 +1,5 @@
 from Controllers.controllers import BookController, UserController
+from Exceptions.exceptions import DuplicateBookError
 import pytest
 
 class TestBookController():
@@ -38,6 +39,10 @@ class TestBookController():
         assert added_book.year == '2000'
         assert added_book.genre == 'Another Genre'
         assert added_book.code == '789465'
+
+    def test_add_book_raises_duplicate_book_error_when_isbn_code_alredy_registered(self, setup_book):
+        with pytest.raises(DuplicateBookError):
+            setup_book.add_book('Some Title', 'Some Author', '1900', 'Some Genre', '789465')
 
     @pytest.mark.parametrize(
             "title, author, year, genre, code",

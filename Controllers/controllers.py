@@ -1,4 +1,5 @@
 from Models.models import Book, User
+from Exceptions.exceptions import DuplicateBookError
 from datetime import datetime
 
 class BookController():
@@ -43,9 +44,12 @@ class BookController():
         self.validate_year_publication(year)        
 
     def add_book(self, title, author, year, genre, code):
-        self.validate_book_fields(title, author, year, genre, code)
-        book = Book(title, author, year, genre, code)
-        self.db.append(book)
+        if self.search_by_book_code(code):
+            raise DuplicateBookError(code)
+        else:
+            self.validate_book_fields(title, author, year, genre, code)
+            book = Book(title, author, year, genre, code)
+            self.db.append(book)
 
     def list_books(self):
         return self.db
