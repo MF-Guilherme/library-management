@@ -98,10 +98,17 @@ class UserController():
             raise ValueError("Not registered! Name field can't contain just numbers")
         if email.isnumeric():
             raise ValueError("Not registered! Email field can't contain just numbers")
+    
+    def validate_numeric_fields(self, phone, user_code):
+        if not phone.isnumeric():
+            raise ValueError("Not registered! Phone field must contain just numbers")
+        if not user_code.isnumeric():        
+            raise ValueError("Not registered! User code field must contain just numbers")
 
     def validate_user_fields(self, name, email, phone, user_code):
         self.validate_empty_fields(name, email, phone, user_code)
         self.validate_non_numeric_fields(name, email)
+        self.validate_numeric_fields(phone, user_code)
 
     
     def register_user(self, name, email, phone, user_code):
