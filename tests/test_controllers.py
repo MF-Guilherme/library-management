@@ -188,3 +188,15 @@ class TestUserController():
     def test_register_user_raises_value_error_if_name_and_email_are_numerics(self, user_controller, name, email, phone, user_code):
         with pytest.raises(ValueError):
             user_controller.register_user(name, email, phone, user_code)
+
+    @pytest.mark.parametrize(
+            "name, email, phone, user_code",
+            [
+                ('Some Name', 'someemail@test.com', '(11)999994444', '1000'),
+                ('Other Name', 'otheremail@test.com', '11987654321', 'CODE1234')
+            ]
+    )
+    def test_register_user_raises_value_error_if_phone_and_user_code_arent_numerics(self, user_controller, name, email, phone, user_code):
+        with pytest.raises(ValueError):
+            user_controller.register_user(name, email, phone, user_code)
+
