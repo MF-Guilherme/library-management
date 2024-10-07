@@ -168,6 +168,19 @@ class TestUserController():
     @pytest.mark.parametrize(
             "name, email, phone, user_code",
             [
+                ('', 'someemail@test.com', '11912345678', '1000'), # name empty
+                ('Other Name', '', '11987654321', '1001'), # email empty
+                ('Other Name', 'otheremail@test.com', '', '1002'), # phone empty
+                ('Other Name', 'otheremail@test.com', '11987654321', ''), # user_code empty
+            ]
+    )
+    def test_register_user_empty_fields_validation(self, user_controller, name, email, phone, user_code):
+        with pytest.raises(ValueError):
+            user_controller.register_user(name, email, phone, user_code)
+
+    @pytest.mark.parametrize(
+            "name, email, phone, user_code",
+            [
                 ('123456', 'someemail@test.com', '11912345678', '1000'), # name is numeric
                 ('Other Name', '123465', '11987654321', '1001') # email is numeric
             ]
