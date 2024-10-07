@@ -1,4 +1,5 @@
 from Controllers.controllers import BookController, UserController
+from Exceptions.exceptions import DuplicateBookError
 from prompt_toolkit import prompt
 
 book_controller = BookController()
@@ -53,6 +54,8 @@ def book_register(controller):
         controller.add_book(title, author, year, genre, code)
         print('Book registered!')
     except ValueError as e:
+        print(f'Error: {e}')
+    except DuplicateBookError as e:
         print(f'Error: {e}')
 
 def show_books(controller):
