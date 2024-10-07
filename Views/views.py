@@ -1,10 +1,12 @@
 from Controllers.controllers import BookController, UserController
+from Exceptions.exceptions import DuplicateError
 from prompt_toolkit import prompt
 
 book_controller = BookController()
 user_controller = UserController()
 
 # BOOK VIEWS
+
 
 def show_menu():
     choice = None
@@ -38,6 +40,7 @@ def show_menu():
         print('-' * 50)
     return ipt, choice
 
+
 def get_book_infos():
     title = input("Book title: ")
     author = input("Author: ")
@@ -47,6 +50,7 @@ def get_book_infos():
     print('-' * 50)
     return title, author, year, genre, code
 
+
 def book_register(controller):
     try:
         title, author, year, genre, code = get_book_infos()
@@ -54,24 +58,31 @@ def book_register(controller):
         print('Book registered!')
     except ValueError as e:
         print(f'Error: {e}')
+    except DuplicateError as e:
+        print(f'Error: {e}')
+
 
 def show_books(controller):
     books = controller.list_books()
     if books:
         for book in books:
-            print(f'Title: {book.title} | Author: {book.author} | ISBN: {book.code}')
-    else: 
+            print(f'Title: {book.title} | Author: {
+                  book.author} | ISBN: {book.code}')
+    else:
         print('There are no books registered yet')
+
 
 def search_book(controller):
     ipt_code = input('Enter the book ISBN code: ')
     print('-' * 50)
     book = controller.search_by_book_code(ipt_code)
     if book:
-        print(f' ISBN: {book.code} | Title: {book.title} | Author: {book.author} | Genre: {book.genre}')
+        print(f' ISBN: {book.code} | Title: {book.title} | Author: {
+              book.author} | Genre: {book.genre}')
     else:
         print('Book not found')
-    
+
+
 def delete_book(controller):
     ipt_code = input('Enter the ISBN code of the book you want to delete: ')
     print('-' * 50)
@@ -80,23 +91,30 @@ def delete_book(controller):
     else:
         print("Book deleted.")
 
+
 def update_book(controller):
     ipt_code = input('Enter the book ISBN code you want to update: ')
     print('-' * 50)
     book = controller.search_by_book_code(ipt_code)
     if book:
-        new_title = prompt("Book Title: ", default=book.title).strip() or book.title
-        new_author = prompt("Author: ", default=book.author).strip() or book.author
-        new_year = prompt("Publication Year: ", default=book.year).strip() or book.year
-        new_genre = prompt("Literary genre: ", default=book.genre).strip() or book.genre
+        new_title = prompt(
+            "Book Title: ", default=book.title).strip() or book.title
+        new_author = prompt(
+            "Author: ", default=book.author).strip() or book.author
+        new_year = prompt("Publication Year: ",
+                          default=book.year).strip() or book.year
+        new_genre = prompt("Literary genre: ",
+                           default=book.genre).strip() or book.genre
         print('-' * 50)
-        controller.update_book(ipt_code, new_title, new_author, new_year, new_genre)
+        controller.update_book(ipt_code, new_title,
+                               new_author, new_year, new_genre)
         print('Book updated')
     else:
         print("Book not found")
 
 # USER VIEWS
-    
+
+
 def get_user_infos():
     name = input("Name: ")
     email = input("E-mail: ")
@@ -105,35 +123,42 @@ def get_user_infos():
     print('-' * 50)
     return name, email, phone, user_code
 
+
 def user_register(controller):
     name, email, phone, user_code = get_user_infos()
     controller.register_user(name, email, phone, user_code)
     print('User registered!')
 
+
 def show_users(controller):
     users = controller.list_users()
     if users:
         for user in users:
-            print(f'Name: {user.name} | Email: {user.email} | User code: {user.user_code}')
-    else: 
+            print(f'Name: {user.name} | Email: {
+                  user.email} | User code: {user.user_code}')
+    else:
         print('There are no users registered yet')
+
 
 def search_user(controller):
     ipt_code = input('Enter the user code: ')
     print('-' * 50)
     user = controller.find_by_user_code(ipt_code)
     if user:
-        print(f' User code: {user.user_code} | Name: {user.name} | Email: {user.email} | Phone number: {user.phone}')
+        print(f' User code: {user.user_code} | Name: {user.name} | Email: {
+              user.email} | Phone number: {user.phone}')
     else:
         print('User not found')
-    
+
+
 def delete_user(controller):
     ipt_code = input('Enter the user code you want to delete: ')
     print('-' * 50)
     if not controller.delete_user(ipt_code):
         print("User not found.")
-    else: 
+    else:
         print("User deleted.")
+
 
 def update_user(controller):
     ipt_code = input('Enter the user code you want to update: ')
@@ -141,8 +166,10 @@ def update_user(controller):
     user = controller.find_by_user_code(ipt_code)
     if user:
         new_name = prompt("Name: ", default=user.name).strip() or user.name
-        new_email = prompt("E-mail: ", default=user.email).strip() or user.email
-        new_phone = prompt("Phone number: ", default=user.phone).strip() or user.phone
+        new_email = prompt(
+            "E-mail: ", default=user.email).strip() or user.email
+        new_phone = prompt(
+            "Phone number: ", default=user.phone).strip() or user.phone
         print('-' * 50)
         controller.update_user(ipt_code, new_name, new_email, new_phone)
         print('User updated')
