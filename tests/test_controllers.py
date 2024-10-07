@@ -150,3 +150,28 @@ class TestBookController():
     def test_update_book_returns_none_when_doesnt_find_the_searched_book(self, setup_books_update):
         update_return = setup_books_update.update_book('999999') # non-existent code
         assert update_return is None
+
+
+class TestUserController():
+    
+    @pytest.fixture
+    def user_controller(self):
+        return UserController()
+     
+    @pytest.fixture
+    def setup_user(self, user_controller):
+        # name, email, phone, user_code
+        user_controller.register_user('Some Name', 'someemail@test.com', '11912345678', '1000')
+        user_controller.register_user('Other Name', 'otheremail@test.com', '11987654321', '1001')
+        return user_controller
+    
+    @pytest.mark.parametrize(
+            "name, email, phone, user_code",
+            [
+                ('123456', 'someemail@test.com', '11912345678', '1000'), # name is numeric
+                ('Other Name', '123465', '11987654321', '1001') # email is numeric
+            ]
+    )
+    def test_register_user_raises_value_error_if_name_and_email_are_numerics(self, user_controller, name, email, phone, user_code):
+        with pytest.raises(ValueError):
+            user_controller.register_user(name, email, phone, user_code)
