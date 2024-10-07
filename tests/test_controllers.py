@@ -162,8 +162,16 @@ class TestUserController():
     def setup_user(self, user_controller):
         # name, email, phone, user_code
         user_controller.register_user('Some Name', 'someemail@test.com', '11912345678', '1000')
-        user_controller.register_user('Other Name', 'otheremail@test.com', '11987654321', '1001')
+        user_controller.register_user('Other Name', 'otheremail@test.com', '1133334444', '1001')
         return user_controller
+    
+    def test_register_user_register_with_valid_fields(self, user_controller):
+        user_controller.register_user('Some Name', 'someemail@test.com', '11912345678', '1000')
+        user = user_controller.list_users()[0]
+        assert user.name == 'Some Name'
+        assert user.email == 'someemail@test.com'
+        assert user.phone == '11912345678'
+        assert user.user_code == '1000'
     
     @pytest.mark.parametrize(
             "name, email, phone, user_code",
