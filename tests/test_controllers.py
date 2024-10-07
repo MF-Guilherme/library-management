@@ -1,5 +1,5 @@
 from Controllers.controllers import BookController, UserController
-from Exceptions.exceptions import DuplicateBookError, LenOfPhoneError
+from Exceptions.exceptions import DuplicateBookError, LenOfPhoneError, EmailFormatError
 import pytest
 
 class TestBookController():
@@ -203,7 +203,7 @@ class TestUserController():
     @pytest.mark.parametrize(
             "name, email, phone, user_code",
             [
-                ('Some Name', 'someemail@test.com', '1199999444444', '1000'), # phone with 12 numbers
+                ('Some Name', 'someemail@test.com', '119999944444', '1000'), # phone with 12 numbers
                 ('Other Name', 'otheremail@test.com', '113333555', '1001'), # phone with 9 numbers
             ]
     )
@@ -211,4 +211,15 @@ class TestUserController():
         with pytest.raises(LenOfPhoneError):
             user_controller.register_user(name, email, phone, user_code)
 
-
+    @pytest.mark.parametrize(
+            "name, email, phone, user_code",
+            [
+                # ('Some Name', 'someemail@test.com', '11999994444', '1000'), # correct format
+                # ('Other Name', 'otheremail@test.com.br', '1133335555', '1001'), # correct format
+                ('Some Name', 'someemailtest.com', '11999994444', '1000'),
+                ('Other Name', 'otheremail@testcombr', '1133335555', '1001'),
+            ]
+    )
+    def test_register_user_return_format_email_error_if_it_isnt_valid(self, user_controller, name, email, phone, user_code):
+        with pytest.raises(EmailFormatError):
+            user_controller.register_user(name, email, phone, user_code)
