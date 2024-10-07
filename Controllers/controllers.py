@@ -1,5 +1,5 @@
 from Models.models import Book, User
-from Exceptions.exceptions import DuplicateBookError
+from Exceptions.exceptions import DuplicateBookError, LenOfPhoneError
 from datetime import datetime
 
 class BookController():
@@ -92,7 +92,6 @@ class UserController():
         if not name or not email or not phone or not user_code:
             raise ValueError('Not registered! Please, enter all fields')
 
-
     def validate_non_numeric_fields(self, name, email):
         if name.isnumeric():
             raise ValueError("Not registered! Name field can't contain just numbers")
@@ -105,11 +104,15 @@ class UserController():
         if not user_code.isnumeric():        
             raise ValueError("Not registered! User code field must contain just numbers")
 
+    def validate_len_phone(self, phone):
+        if not len(phone) >= 10 or not len(phone) <= 11:
+            raise LenOfPhoneError()
+        
     def validate_user_fields(self, name, email, phone, user_code):
         self.validate_empty_fields(name, email, phone, user_code)
         self.validate_non_numeric_fields(name, email)
         self.validate_numeric_fields(phone, user_code)
-
+        self.validate_len_phone(phone)
     
     def register_user(self, name, email, phone, user_code):
         self.validate_user_fields(name, email, phone, user_code)
