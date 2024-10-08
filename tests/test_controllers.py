@@ -39,14 +39,14 @@ class TestBookController():
         assert added_book.author == 'Some Author'
         assert added_book.year == '1900'
         assert added_book.genre == 'Some Genre'
-        assert added_book.code == '123456'
+        assert added_book.isbn_code == '123456'
 
         added_book = controller.db[1]
         assert added_book.title == 'Another Title'
         assert added_book.author == 'Another Author'
         assert added_book.year == '2000'
         assert added_book.genre == 'Another Genre'
-        assert added_book.code == '789465'
+        assert added_book.isbn_code == '789465'
 
     def test_add_book_raises_duplicate_book_error_when_isbn_code_alredy_registered(self, setup_book):
         with pytest.raises(DuplicateError):
@@ -130,7 +130,7 @@ class TestBookController():
 
     def test_delete_book_deletes_the_given_book_from_the_db(self, setup_book):
         book = setup_book.search_by_book_code('123456')
-        setup_book.delete_book(book.code)
+        setup_book.delete_book(book.isbn_code)
         list_books = setup_book.list_books()
         assert book not in list_books
 
@@ -142,7 +142,7 @@ class TestBookController():
     def test_update_book_with_valid_data(self, setup_book):
         book = setup_book.search_by_book_code('123456')
         update_return = setup_book.update_book(
-            book.code, 'Updated title', 'Updated author', '2024', 'Updated genre')
+            book.isbn_code, 'Updated title', 'Updated author', '2024', 'Updated genre')
         updated_book = setup_book.search_by_book_code('123456')
 
         assert update_return is True
