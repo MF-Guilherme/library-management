@@ -1,3 +1,4 @@
+from Models.models import User
 from Controllers.controllers import BookController, UserController
 from Exceptions.exceptions import DuplicateError, LenOfPhoneError, EmailFormatError
 import pytest
@@ -272,3 +273,64 @@ class TestUserController():
     def test_register_user_duplicated_user_code(self, setup_user):
         with pytest.raises(DuplicateError):
             setup_user.register_user('Some Name', 'someemail@test.com', '11999994444', '1000')
+
+    def test_list_users_returns_a_list_of_users(self, setup_user):
+        users = setup_user.list_users()
+
+        assert type(setup_user.list_users()) == list
+        assert isinstance(users[0], User)
+        assert isinstance(users[1], User)
+
+    def test_find_by_user_code_returns_a_user(self, setup_user):
+        user1 = setup_user.find_by_user_code('1000')
+        user2 = setup_user.find_by_user_code('1001')
+
+        assert isinstance(user1, User)
+        assert user1.name == 'Some Name'
+        assert user1.email == 'someemail@test.com'
+        assert user1.phone == '11912345678'
+
+        assert isinstance(user2, User)
+        assert user2.name == 'Other Name'
+        assert user2.email == 'otheremail@test.com'
+        assert user2.phone == '1133334444'
+
+    def test_find_by_user_code_returns_none_if_it_doesnt_exists(self, setup_user):
+        assert setup_user.find_by_user_code('123465') is None
+
+    def test_delete_user(self, setup_user):
+        delete_code = '1000'
+        assert setup_user.find_by_user_code(delete_code) in setup_user.db
+        assert setup_user.delete_user(delete_code) is True
+        assert setup_user.find_by_user_code(delete_code) not in setup_user.db
+    
+    def test_delete_user_returns_false_if_user_code_doesnt_exists(self, setup_user):
+        delete_code = '123456'
+        assert setup_user.delete_user(delete_code) is False
+
+    def test_update_user(self, setup_user):
+        user = setup_user.find_by_user_code('1000')
+        update_return = setup_user.update_user(user.user_code, 'Updated name', 'updatedemail@test.com', '11777775555')
+        updated_user = setup_user.find_by_user_code('1000')
+
+        assert update_return is True
+        assert updated_user.name == 'Updated name'
+        assert updated_user.email == 'updatedemail@test.com'
+        assert updated_user.phone == '11777775555'
+
+    @pytest.mark.parametrize(
+        "user_code, name, email, phone",
+        [
+            ('1000', '123456', 'updatedemail@test.com','11999994444'),  # name numeric
+            ('1001', 'Update Name', '123456','11999994444'),  # email numeric
+            ('1000', 'Update Name', 'updatedemail','phone123456'),  # phone non numeric
+            ('1001', '', 'updatedemail','phone123456'),  # name empty
+        ]
+    )
+    def test_update_user_raises_value_error_when_a_field_fails_in_data_validation(self, setup_user, user_code, name, email, phone):
+        with pytest.raises(ValueError):
+            setup_user.update_user(user_code, name, email, phone)
+
+    def test_update_user_returns_none_when_doesnt_find_the_searched_user(self, setup_user):
+        update_return = setup_user.update_user('999999')  # non-existent user code
+        assert update_return is None

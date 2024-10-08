@@ -1,5 +1,5 @@
 from Controllers.controllers import BookController, UserController
-from Exceptions.exceptions import DuplicateError
+from Exceptions.exceptions import DuplicateError, EmailFormatError, LenOfPhoneError
 from prompt_toolkit import prompt
 
 book_controller = BookController()
@@ -125,9 +125,16 @@ def get_user_infos():
 
 
 def user_register(controller):
-    name, email, phone, user_code = get_user_infos()
-    controller.register_user(name, email, phone, user_code)
-    print('User registered!')
+    try:
+        name, email, phone, user_code = get_user_infos()
+        controller.register_user(name, email, phone, user_code)
+        print('User registered!')
+    except ValueError as e:
+        print(f'Error: {e}')
+    except EmailFormatError as e:
+        print(f'Error: {e}')
+    except LenOfPhoneError as e:
+        print(f'Error: {e}')
 
 
 def show_users(controller):
