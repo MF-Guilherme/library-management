@@ -2,16 +2,28 @@
 
 ## Descrição
 
-Este projeto é um sistema simples de gerenciamento de biblioteca, desenvolvido para praticar conceitos de Programação Orientada a Objetos (POO) e o padrão arquitetural MVC (Model-View-Controller). O objetivo é criar um sistema modular e escalável, começando com funcionalidades básicas de CRUD (Create, Read, Update, Delete) para gerenciar livros e usuários, com melhorias progressivas planejadas.
+Este projeto é um sistema de Gerenciamento de Biblioteca, criado para praticar conceitos de Programação Orientada a Objetos (POO) e o padrão arquitetural MVC (Model-View-Controller). O sistema está estruturado em módulos e segue uma abordagem escalável, com funcionalidades de CRUD para gerenciar livros e usuários.
 
-Atualmente, o projeto possui:
+Nesta primeira release (v1.0.0), o projeto contém uma interface de console com funcionalidades básicas e cobertura de testes unitários para os controllers. Melhorias futuras estão planejadas em releases seguintes.
+
+## Melhorias Programadas
+
+As próximas etapas do projeto incluem:
+
+1. **Banco de Dados**: Integração de um banco de dados relacional (PostgreSQL ou MySQL) para armazenar os dados persistentes de livros e usuários.
+2. **Interface Web**: Migração para Django, transformando o sistema em uma aplicação web com templates HTML.
+3. **APIs REST**: Implementação de uma API REST com Django Rest Framework, possibilitando integração com outras aplicações.
+4. **Validações de Dados**: Melhorias nas validações de campos de entrada, garantindo formatos corretos (e.g., ISBN válido, formato de email).
+5. **Melhorias na Interface**: Na próxima release, a interação do usuário será otimizada com a interface web.
+
+### Principais componentes:
 
 - **Modelos**: Representação dos dados de Livros e Usuários.
 - **Controllers**: Lógica de negócios para gerenciar as operações com Livros e Usuários.
-- **Views**: Interface de console que coleta os dados dos usuários e exibe as informações.
-- **Main**: Arquivo principal que inicializa o menu de navegação e as funcionalidades.
+- **Views**: Interface de console para coleta de dados e exibição de informações.
+- **Main**: Ponto de entrada do sistema, que gerencia a navegação no menu e a chamada das funcionalidades.
 
-## Funcionalidades Atuais (Em processo de upgrade)
+## Funcionalidades Atuais
 
 ### Gerenciamento de Livros
 
@@ -29,16 +41,21 @@ Atualmente, o projeto possui:
 - Atualizar informações de um usuário
 - Excluir um usuário do sistema
 
+### Testes Unitários
+
+Os controllers possuem cobertura de testes unitários com **pytest**, utilizando boas práticas como a inicialização de fixtures para garantir que os livros e usuários estejam cadastrados antes dos testes. A cobertura de código foi verificada com a ferramenta **pytest-cov**, garantindo uma boa robustez do sistema.
+
 ## Estrutura do Projeto
 
-- **`models.py`**: Contém as classes `Book` e `User`, que representam os modelos de dados.
-- **`controllers.py`**: Inclui as classes `BookController` e `UserController`, responsáveis pela lógica de negócios e manipulação dos dados.
-- **`views.py`**: Responsável pela interface de usuário (UI), coletando dados e interagindo com os controllers.
-- **`main.py`**: Ponto de entrada do sistema, que controla o fluxo do programa e chama as funções de view e controller.
+- **`models.py`**: Define as classes `Book` e `User`, que representam os dados da aplicação.
+- **`controllers.py`**: Contém as classes `BookController` e `UserController`, responsáveis pela lógica de negócio e manipulação dos dados.
+- **`views.py`**: Responsável pela interface de usuário (UI) no console, interagindo com os controllers.
+- **`main.py`**: Controla o fluxo principal do programa, gerenciando o menu e as opções de navegação.
+- **`test_controllers.py`**: Contém os testes unitários dos controllers, verificando a integridade das funcionalidades de CRUD.
 
 ## Exemplo de Uso
 
-Ao executar o programa, será exibido um menu principal no terminal, onde você pode escolher gerenciar **livros** ou **usuários**. Cada opção apresenta funcionalidades como **adicionar**, **listar**, **buscar**, **atualizar** ou **excluir** os dados.
+Ao executar o programa, será exibido um menu principal no terminal, onde você pode gerenciar **livros** ou **usuários**. Cada opção oferece as operações de CRUD necessárias.
 
 ```bash
 $ python main.py
@@ -49,22 +66,10 @@ $ python main.py
 --------------------------------------------------
 ```
 
-Ao escolher uma das opções (1 ou 2), o sistema permitirá que você realize as operações de CRUD correspondentes.
-
-## Escalabilidade e Melhorias Futuras
-
-Este projeto será expandido com as seguintes melhorias:
-
-1. **Validações de Dados**: Implementação de validações nos campos de entrada para garantir que os dados estejam no formato correto (e.g., ISBN válido, email formatado corretamente).
-2. **Persistência de Dados**: Implementação de um banco de dados relacional (provavelmente PostgreSQL ou MySQL) para armazenar os dados de livros e usuários.
-3. **Testes Unitários**: Criação de testes unitários para garantir a integridade das funcionalidades e evitar regressões.
-4. **API REST**: Evoluir o sistema para uma API REST utilizando Django Rest Framework (DRF), permitindo a comunicação via HTTP e possibilitando a criação de interfaces web e mobile.
-5. **Interface Web**: Implementação de uma interface web com Django, para fornecer uma UI mais moderna e acessível.
-
 ## Requisitos
 
 - Python 3.x
-- Biblioteca `prompt_toolkit` para melhorar a interface de entrada de dados no terminal
+- Biblioteca `prompt_toolkit` para melhorar a interface de entrada no terminal.
 
 ## Como Rodar o Projeto
 
@@ -77,7 +82,7 @@ git clone https://github.com/seu-usuario/library-management.git
 2. Instale as dependências:
 
 ```bash
-pip install prompt_toolkit
+pip install -r requirements.txt
 ```
 
 3. Execute o programa:
@@ -88,4 +93,4 @@ python main.py
 
 ## Contribuições
 
-Contribuições são bem-vindas! Se você quiser sugerir melhorias ou novas funcionalidades, fique à vontade para abrir uma issue ou enviar um pull request.
+Contribuições são bem-vindas! Se você quiser sugerir melhorias ou funcionalidades, sinta-se à vontade para abrir uma issue ou enviar um pull request.
