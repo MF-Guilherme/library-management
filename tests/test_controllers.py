@@ -307,3 +307,13 @@ class TestUserController():
     def test_delete_user_returns_false_if_user_code_doesnt_exists(self, setup_user):
         delete_code = '123456'
         assert setup_user.delete_user(delete_code) is False
+
+    def test_update_user(self, setup_user):
+        user = setup_user.find_by_user_code('1000')
+        update_return = setup_user.update_user(user.user_code, 'Updated name', 'updatedemail@test.com', '11777775555')
+        updated_user = setup_user.find_by_user_code('1000')
+
+        assert update_return is True
+        assert updated_user.name == 'Updated name'
+        assert updated_user.email == 'updatedemail@test.com'
+        assert updated_user.phone == '11777775555'
