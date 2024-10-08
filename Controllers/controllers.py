@@ -1,12 +1,17 @@
 from Models.models import Book, User
 from Exceptions.exceptions import DuplicateError, LenOfPhoneError, EmailFormatError
+from db_connection import get_connection
 from datetime import datetime
-import re
+import re, psycopg2
 
 
 class BookController():
     def __init__(self) -> None:
-        self.db = []
+        self.conn = get_connection()
+        if self.conn is not None:
+            self.cursor = self.conn.cursor()
+        else:
+            raise Exception("Failed to establish database connection")
 
     def validate_empty_fields(self, title, author, year, genre, code):
         # validate if any field is empty
@@ -55,19 +60,31 @@ class BookController():
     def add_book(self, title, author, year, genre, code):
         if self.search_by_book_code(code):
             raise DuplicateError(code)
-        else:
+    
+        try:
             self.validate_book_fields(title, author, year, genre, code)
-            book = Book(title, author, year, genre, code)
-            self.db.append(book)
+            query = "INSERT INTO books (title, author, year, genre, isbn_code) VALUES ( %s, %s, %s, %s, %s);"
+            with self.conn:
+                with self.conn.cursor() as cursor:
+                    cursor.execute(query, (title, author, year, genre, code,))
+            return "Success! Book registered!"
+        
+        except Exception as e:
+            return f"Error: {e}"
+        
 
     def list_books(self):
         return self.db
 
     def search_by_book_code(self, code):
-        for book in self.db:
-            if book.code == code:
-                return book
-        return None
+        query = "SELECT * FROM books WHERE isbn_code = %s"
+        self.cursor.execute(query, (code, ))
+        result = self.cursor.fetchone()
+        if result:
+            return result
+        else:
+            return None
+            
 
     def update_book(self, code, title=None, author=None, year=None, genre=None):
         book = self.search_by_book_code(code)
