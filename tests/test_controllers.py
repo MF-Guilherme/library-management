@@ -280,4 +280,17 @@ class TestUserController():
         assert type(setup_user.list_users()) == list
         assert isinstance(users[0], User)
         assert isinstance(users[1], User)
-    
+
+    def test_find_by_user_code_returns_a_user(self, setup_user):
+        user1 = setup_user.find_by_user_code('1000')
+        user2 = setup_user.find_by_user_code('1001')
+
+        assert isinstance(user1, User)
+        assert user1.name == 'Some Name'
+        assert user1.email == 'someemail@test.com'
+        assert user1.phone == '11912345678'
+
+        assert isinstance(user2, User)
+        assert user2.name == 'Other Name'
+        assert user2.email == 'otheremail@test.com'
+        assert user2.phone == '1133334444'
