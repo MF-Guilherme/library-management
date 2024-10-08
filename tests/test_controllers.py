@@ -304,6 +304,6 @@ class TestUserController():
         assert setup_user.delete_user(delete_code) is True
         assert setup_user.find_by_user_code(delete_code) not in setup_user.db
     
-    def test_delete_user_returns_none_if_user_code_doesnt_exists(self, setup_user):
+    def test_delete_user_returns_false_if_user_code_doesnt_exists(self, setup_user):
         delete_code = '123456'
-        assert setup_user.find_by_user_code(delete_code) is None
+        assert setup_user.delete_user(delete_code) is False
