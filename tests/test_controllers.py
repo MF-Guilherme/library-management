@@ -317,3 +317,16 @@ class TestUserController():
         assert updated_user.name == 'Updated name'
         assert updated_user.email == 'updatedemail@test.com'
         assert updated_user.phone == '11777775555'
+
+    @pytest.mark.parametrize(
+        "user_code, name, email, phone",
+        [
+            ('1000', '123456', 'updatedemail@test.com','11999994444'),  # name numeric
+            ('1001', 'Update Name', '123456','11999994444'),  # email numeric
+            ('1000', 'Update Name', 'updatedemail','phone123456'),  # phone non numeric
+            ('1001', '', 'updatedemail','phone123456'),  # name empty
+        ]
+    )
+    def test_update_user_raises_value_error_when_a_field_fails_in_data_validation(self, setup_user, user_code, name, email, phone):
+        with pytest.raises(ValueError):
+            setup_user.update_user(user_code, name, email, phone)
