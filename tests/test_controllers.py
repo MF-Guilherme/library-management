@@ -1,3 +1,4 @@
+from Models.models import User
 from Controllers.controllers import BookController, UserController
 from Exceptions.exceptions import DuplicateError, LenOfPhoneError, EmailFormatError
 import pytest
@@ -272,3 +273,11 @@ class TestUserController():
     def test_register_user_duplicated_user_code(self, setup_user):
         with pytest.raises(DuplicateError):
             setup_user.register_user('Some Name', 'someemail@test.com', '11999994444', '1000')
+
+    def test_list_users_returns_a_list_of_users(self, setup_user):
+        users = setup_user.list_users()
+        
+        assert type(setup_user.list_users()) == list
+        assert isinstance(users[0], User)
+        assert isinstance(users[1], User)
+    
