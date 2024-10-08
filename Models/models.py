@@ -1,13 +1,13 @@
 class Book():
-    def __init__(self, title: str, author: str, year: int, genre: str, code: int) -> None:
+    def __init__(self, title: str, author: str, year: int, genre: str, isbn_code: str) -> None:
         self.title = title
         self.author = author
         self.year = year
         self.genre = genre
-        self.code = code
+        self.isbn_code = isbn_code
     
     def show_info(self):
-        return f' ISBN code: {self.code} | Title: {self.title} | Author: {self.author} | Publication Year: {self.year} | Genre: {self.genre}'
+        return f' ISBN code: {self.isbn_code} | Title: {self.title} | Author: {self.author} | Publication Year: {self.year} | Genre: {self.genre}'
             
 
 class User():

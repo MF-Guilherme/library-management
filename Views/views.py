@@ -54,8 +54,8 @@ def get_book_infos():
 def book_register(controller):
     try:
         title, author, year, genre, code = get_book_infos()
-        controller.add_book(title, author, year, genre, code)
-        print('Book registered!')
+        ret = controller.add_book(title, author, year, genre, code)
+        print(ret)
     except ValueError as e:
         print(f'Error: {e}')
     except DuplicateError as e:
