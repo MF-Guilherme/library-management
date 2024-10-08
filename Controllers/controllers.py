@@ -158,7 +158,10 @@ class UserController():
 
     def update_user(self, user_code, name=None, email=None, phone=None):
         user = self.find_by_user_code(user_code)
-        if user:
+        if user is None:
+            return None
+        else:
+            self.validate_user_fields(name, email, phone, user_code)
             if name:
                 user.name = name
             if email:
@@ -166,4 +169,3 @@ class UserController():
             if phone:
                 user.phone = phone
             return True
-        return False
