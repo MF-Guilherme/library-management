@@ -294,3 +294,6 @@ class TestUserController():
         assert user2.name == 'Other Name'
         assert user2.email == 'otheremail@test.com'
         assert user2.phone == '1133334444'
+
+    def test_find_by_user_code_returns_none_if_it_doesnt_exists(self, setup_user):
+        assert setup_user.find_by_user_code('123465') is None
