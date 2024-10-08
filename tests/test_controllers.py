@@ -330,3 +330,7 @@ class TestUserController():
     def test_update_user_raises_value_error_when_a_field_fails_in_data_validation(self, setup_user, user_code, name, email, phone):
         with pytest.raises(ValueError):
             setup_user.update_user(user_code, name, email, phone)
+
+    def test_update_user_returns_none_when_doesnt_find_the_searched_user(self, setup_user):
+        update_return = setup_user.update_user('999999')  # non-existent user code
+        assert update_return is None
