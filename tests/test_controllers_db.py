@@ -74,20 +74,20 @@ class TestBookController(unittest.TestCase):
                 with pytest.raises(ValueError):
                     controller.add_book(title, author, year, genre, code)
 
-#     @pytest.mark.parametrize(
-#         "title, author, year, genre, code",
-#         [
-#             ('123456', 'Some Author', '1900',
-#              'Some Genre', '12345'),  # title isn't string
-#             ('Some Title', '123456', '1900', 'Some Genre',
-#              '12345'),  # author isn't string
-#             ('Some Title', 'Some Author', '1900',
-#              '123456', '12345'),  # genre isn't string
-#         ]
-#     )
-#     def test_add_book_raises_ValueError_if_title_author_or_genre_are_not_strings(self, book_controller, title, author, year, genre, code):
-#         with pytest.raises(ValueError):
-#             book_controller.add_book(title, author, year, genre, code)
+    def test_add_book_raises_ValueError_if_title_author_or_genre_are_not_strings(self):
+        controller = BookController()
+        
+        test_data = [
+            ('123456', 'Some Author', '1900', 'Some Genre', '12345'),  # title isn't string
+            ('Some Title', '123456', '1900', 'Some Genre', '12345'),  # author isn't string
+            ('Some Title', 'Some Author', '1900', '123456', '12345'),  # genre isn't string
+        ]
+
+        for title, author, year, genre, code in test_data:
+            with patch('Controllers.controllers.BookController.search_by_book_code') as mock_search_by_book_code:
+                mock_search_by_book_code.return_value = None
+                with pytest.raises(ValueError):
+                    controller.add_book(title, author, year, genre, code)
 
 #     def test_add_book_raises_ValueError_if_year_doesnt_less_than_or_equal_current_year(self, book_controller):
 #         with pytest.raises(ValueError):
