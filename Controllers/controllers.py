@@ -61,17 +61,13 @@ class BookController():
     def add_book(self, title, author, year, genre, code):
         if self.search_by_book_code(code):
             raise DuplicateError(code)
-    
-        try:
-            self.validate_book_fields(title, author, year, genre, code)
-            query = "INSERT INTO books (title, author, year, genre, isbn_code) VALUES (%s, %s, %s, %s, %s);"
-            with self.conn:
-                with self.conn.cursor() as cursor:
-                    cursor.execute(query, (title, author, year, genre, code,))
-            return "Success! Book registered!"
-        
-        except Exception as e:
-            return f"Error: {e}"
+
+        self.validate_book_fields(title, author, year, genre, code)
+        query = "INSERT INTO books (title, author, year, genre, isbn_code) VALUES (%s, %s, %s, %s, %s);"
+        with self.conn:
+            with self.conn.cursor() as cursor:
+                cursor.execute(query, (title, author, year, genre, code,))
+        return "Success! Book registered!"
         
 
     def list_books(self):
