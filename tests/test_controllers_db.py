@@ -96,10 +96,13 @@ class TestBookController(unittest.TestCase):
             with pytest.raises(ValueError):
                 controller.add_book('Some Title', 'Some Author', '2025', 'Some Genre', '4341312')
 
-#     def test_add_book_raises_ValueError_if_digits_in_year_field_are_less_than3(self, book_controller):
-#         with pytest.raises(ValueError):
-#             book_controller.add_book(
-#                 'Some Title', 'Some Author', '99', 'Some Genre', '123456')
+    def test_add_book_raises_ValueError_if_digits_in_year_field_are_less_than_3(self):
+        controller = BookController()
+        with patch('Controllers.controllers.BookController.search_by_book_code') as mock_search_by_book_code:
+            mock_search_by_book_code.return_value = None
+        with pytest.raises(ValueError):
+            controller.add_book(
+                'Some Title', 'Some Author', '99', 'Some Genre', '123456')
 
 #     def test_list_books_returns_empty_list_when_no_books_are_added(self, book_controller):
 #         assert book_controller.list_books() == [], "Should return an empty list"
