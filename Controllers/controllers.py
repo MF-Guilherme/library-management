@@ -25,9 +25,9 @@ class BookController():
                 'Not registered! The Publication Year and ISBN Code must contain numbers')
         if not year.isnumeric():
             raise ValueError(
-                'Not registered! Publication Year must contain a number')
+                'Not registered! Publication Year must contain numbers')
         if not code.isnumeric():
-            raise ValueError('Not registered! ISBN Code must contain a number')
+            raise ValueError('Not registered! ISBN Code must contain numbers')
 
     def validate_non_numeric_fields(self, title, author, genre):
         # validate if title, author and genre aren't just numbers
@@ -52,6 +52,7 @@ class BookController():
                 "Not registered! Publication year must contain at least 3 digits.")
 
     def validate_book_fields(self, title, author, year, genre, code):
+        year = str(year)
         self.validate_empty_fields(title, author, year, genre, code)
         self.validate_numeric_fields(year, code)
         self.validate_non_numeric_fields(title, author, genre)
@@ -63,7 +64,7 @@ class BookController():
     
         try:
             self.validate_book_fields(title, author, year, genre, code)
-            query = "INSERT INTO books (title, author, year, genre, isbn_code) VALUES ( %s, %s, %s, %s, %s);"
+            query = "INSERT INTO books (title, author, year, genre, isbn_code) VALUES (%s, %s, %s, %s, %s);"
             with self.conn:
                 with self.conn.cursor() as cursor:
                     cursor.execute(query, (title, author, year, genre, code,))
