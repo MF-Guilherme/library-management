@@ -7,7 +7,6 @@ import pytest, unittest
 
 class TestBookController(unittest.TestCase):
 
-
     @patch('Controllers.controllers.get_connection')
     @patch('Controllers.controllers.BookController.search_by_book_code')
     def test_add_book_with_valid_data(self, mock_search_by_book_code, mock_get_connection):
@@ -33,10 +32,14 @@ class TestBookController(unittest.TestCase):
         
         mock_conn.__exit__.assert_called_once() # Verifica se o with foi encerrado com commit ou rollback
         
-    # def test_add_book_raises_duplicate_book_error_when_isbn_code_alredy_registered(self, setup_book):
-    #     with pytest.raises(DuplicateError):
-    #         setup_book.add_book('Some Title', 'Some Author',
-    #                             '1900', 'Some Genre', '789465')
+    @patch('Controllers.controllers.BookController.search_by_book_code')
+    def test_add_book_raises_duplicate_book_error_when_isbn_code_alredy_registered(self, mock_search_by_book_code):
+        mock_search_by_book_code.return_value = ('Some Title', 'Some Author', 1900, 'Some Genre', '789465')
+
+        controller = BookController()
+
+        with pytest.raises(DuplicateError):
+            controller.add_book('Some Title', 'Some Author', 1900, 'Some Genre', '789465')
 
 #     @pytest.mark.parametrize(
 #         "title, author, year, genre, code",
