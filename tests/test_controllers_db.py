@@ -41,23 +41,22 @@ class TestBookController(unittest.TestCase):
         with pytest.raises(DuplicateError):
             controller.add_book('Some Title', 'Some Author', 1900, 'Some Genre', '789465')
 
-#     @pytest.mark.parametrize(
-#         "title, author, year, genre, code",
-#         [
-#             ('', 'Some Author', '1234', 'Some Genre', '123456'),  # title is empty
-#             ('Some Author', '', '1234', 'Some Genre',
-#              '123456'),  # author is empty
-#             ('Some Author', 'Some Author', '',
-#              'Some Genre', '123456'),  # year is empty
-#             ('Some Author', 'Some Author', '1234',
-#              '', '123456'),  # genre is empty
-#             ('Some Author', 'Some Author', '1234',
-#              'Some Genre', '')  # code is empty
-#         ]
-#     )
-#     def test_add_book_raises_ValueError_if_any_field_is_empty(self, book_controller, title, author, year, genre, code):
-#         with pytest.raises(ValueError):
-#             book_controller.add_book(title, author, year, genre, code)
+    def test_add_book_raises_ValueError_if_any_field_is_empty(self):
+        controller = BookController()
+
+        test_data =     [
+        ('', 'Some Author', '1234', 'Some Genre', '123456'),  # title is empty
+        ('Some Title', '', '1234', 'Some Genre', '123456'),  # author is empty
+        ('Some Title', 'Some Author', '', 'Some Genre', '123456'),  # year is empty
+        ('Some Title', 'Some Author', '1234', '', '123456'),  # genre is empty
+        ('Some Title', 'Some Author', '1234', 'Some Genre', '')  # code is empty
+    ]   
+        for title, author, year, genre, code in test_data:
+            with patch('Controllers.controllers.BookController.search_by_book_code') as mock_search_by_book_code:
+                mock_search_by_book_code.return_value = None
+                
+                with pytest.raises(ValueError):
+                    controller.add_book(title, author, year, genre, code)
 
 #     @pytest.mark.parametrize(
 #         "title, author, year, genre, code",
