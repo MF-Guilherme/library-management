@@ -27,21 +27,18 @@ if __name__ == "__main__":
                 book_options[choice]()
             except TypeError:
                 book_options[choice](book_controller)
-                print('-' * 50)
+                print('-' * 85)
             except KeyError:
                 print('Insert a valid option.')
-                print('-' * 50)
+                print('-' * 85)
                 pass
         elif ipt == '2':
             try:
                 user_options[choice]()
             except TypeError:
                 user_options[choice](user_controller)
-                print('-' * 50)
+                print('-' * 85)
             except KeyError:
                 print('Insert a valid option.')
-                print('-' * 50)
+                print('-' * 85)
                 pass
-
-
-        
