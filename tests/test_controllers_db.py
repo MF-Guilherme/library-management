@@ -105,7 +105,7 @@ class TestBookController(unittest.TestCase):
                 'Some Title', 'Some Author', '99', 'Some Genre', '123456')
     
     @patch('Controllers.controllers.get_connection')
-    def test_list_books_returns_none_when_no_books_are_added(self, mock_get_connection):
+    def test_list_all_books_returns_none_if_there_arent_books(self, mock_get_connection):
         
         mock_conn = MagicMock()
         mock_cursor = MagicMock()
@@ -117,15 +117,32 @@ class TestBookController(unittest.TestCase):
         mock_cursor.fetchall.return_value = []
 
         controller = BookController()
-        result = controller.list_books()
+        result = controller.list_all_books()
 
         self.assertIsNone(result)
 
-#     def test_list_books_returns_list_of_books_after_adding_books(self, setup_book):
-#         book1 = setup_book.search_by_book_code('123456')
-#         book2 = setup_book.search_by_book_code('789465')
-#         assert setup_book.list_books() == [
-#             book1, book2], "The books list does not contain the expected books"
+    @patch('Controllers.controllers.get_connection')
+    def test_list_all_books_returns_list_of_books(self, mock_get_connection):
+        
+        mock_conn = MagicMock()
+        mock_cursor = MagicMock()
+
+        mock_conn.__enter__.return_value = mock_conn
+        mock_conn.cursor.return_value.__enter__.return_value = mock_cursor
+        mock_get_connection.return_value = mock_conn
+
+        mock_cursor.fetchall.return_value = [
+            (1, 'Title', 'Author', 1900, 'Genre', '1234567891'),
+            (2, 'Other Title', 'Other Author', 1900, 'Other Genre', '9874562131'),
+        ]
+
+        controller = BookController()
+        result = controller.list_all_books()
+
+        self.assertEqual(len(result), 2)
+        self.assertEqual(result[0][1], 'Title')
+        self.assertEqual(result[1][1], 'Other Title')
+
 
 #     def test_search_book_by_code_returns_the_searched_book(self, setup_book):
 #         book = setup_book.search_by_book_code('789465')
