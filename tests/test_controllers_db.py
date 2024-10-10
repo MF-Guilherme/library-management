@@ -103,9 +103,23 @@ class TestBookController(unittest.TestCase):
         with pytest.raises(ValueError):
             controller.add_book(
                 'Some Title', 'Some Author', '99', 'Some Genre', '123456')
+    
+    @patch('Controllers.controllers.get_connection')
+    def test_list_books_returns_none_when_no_books_are_added(self, mock_get_connection):
+        
+        mock_conn = MagicMock()
+        mock_cursor = MagicMock()
 
-#     def test_list_books_returns_empty_list_when_no_books_are_added(self, book_controller):
-#         assert book_controller.list_books() == [], "Should return an empty list"
+        mock_conn.__enter__.return_value = mock_conn
+        mock_conn.cursor.return_value.__enter__.return_value = mock_cursor
+        mock_get_connection.return_value = mock_conn
+
+        mock_cursor.fetchall.return_value = []
+
+        controller = BookController()
+        result = controller.list_books()
+
+        self.assertIsNone(result)
 
 #     def test_list_books_returns_list_of_books_after_adding_books(self, setup_book):
 #         book1 = setup_book.search_by_book_code('123456')
