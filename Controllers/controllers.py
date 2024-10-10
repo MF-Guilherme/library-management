@@ -68,10 +68,17 @@ class BookController():
             with self.conn.cursor() as cursor:
                 cursor.execute(query, (title, author, year, genre, code,))
         return "Success! Book registered!"
-        
-
-    def list_books(self):
-        return self.db
+   
+    def list_all_books(self):
+        query = "SELECT * FROM books"
+        with self.conn:
+            with self.conn.cursor() as cursor:
+                cursor.execute(query)
+                result = cursor.fetchall()
+        if result:
+            return result
+        else:
+            return None
 
     def search_by_book_code(self, code):
         query = "SELECT * FROM books WHERE isbn_code = %s"
