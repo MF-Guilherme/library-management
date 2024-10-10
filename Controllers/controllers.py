@@ -82,14 +82,15 @@ class BookController():
 
     def search_by_book_code(self, code):
         query = "SELECT * FROM books WHERE isbn_code = %s"
-        self.cursor.execute(query, (code, ))
-        result = self.cursor.fetchone()
+        with self.conn:
+            with self.conn.cursor() as cursor:
+                cursor.execute(query, (code, ))
+                result = cursor.fetchone()
         if result:
             return result
         else:
             return None
-            
-
+          
     def update_book(self, code, title=None, author=None, year=None, genre=None):
         book = self.search_by_book_code(code)
         if book is None:
