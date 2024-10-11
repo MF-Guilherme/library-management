@@ -47,7 +47,7 @@ class BookController():
         if int(year) > current_year:
             raise ValueError(
                 "Not registered! Publication year must be less than or equal to the current year")
-        if len(year) < 3:
+        if len(str(year)) < 3:
             raise ValueError(
                 "Not registered! Publication year must contain at least 3 digits.")
 
@@ -92,19 +92,18 @@ class BookController():
             return None
           
     def update_book(self, code, title=None, author=None, year=None, genre=None):
+        query = ("""
+                 UPDATE books SET (title, author, year, genre) = (%s, %s, %s, %s)
+                 WHERE isbn_code = %s;
+                 """)
         book = self.search_by_book_code(code)
         if book is None:
             return None
         else:
             self.validate_book_fields(title, author, year, genre, code)
-            if title:
-                book.title = title
-            if author:
-                book.author = author
-            if year:
-                book.year = year
-            if genre:
-                book.genre = genre
+            with self.conn:
+                with self.conn.cursor() as cursor:
+                    cursor.execute(query, (title, author, year, genre, code, ))        
             return True
 
     def delete_book(self, code):
