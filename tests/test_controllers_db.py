@@ -9,6 +9,15 @@ import pytest, unittest
 class TestBookController(unittest.TestCase):
 
     @patch('Controllers.controllers.get_connection')
+    def test_connection_failed(self, mock_get_connection):    
+        mock_get_connection.return_value = None
+
+        with pytest.raises(Exception, match="Failed to establish database connection"):
+            controller = BookController()
+
+
+
+    @patch('Controllers.controllers.get_connection')
     @patch('Controllers.controllers.BookController.search_by_book_code')
     def test_add_book_with_valid_data(self, mock_search_by_book_code, mock_get_connection):
         mock_search_by_book_code.return_value = None
@@ -234,36 +243,31 @@ class TestBookController(unittest.TestCase):
                  )
         self.assertTrue(result)
 
+    @patch('Controllers.controllers.BookController.search_by_book_code')
+    def test_update_book_returns_none_when_doesnt_find_the_searched_book(self, mock_search_by_book_code):
+        mock_search_by_book_code.return_value = None
 
-#     @pytest.mark.parametrize(
-#         "title, author, year, genre, code",
-#         [
-#             ('123465', 'Updated author', '2024',
-#              'Updated genre', '11111'),  # title numeric
-#             ('Updated title', '123456', '2024',
-#              'Updated genre', '22222'),  # author numeric
-#             ('Updated title', 'Updated author', '2024',
-#              '123456', '44444'),  # genre numeric
+        controller = BookController()
 
-#             ('Updated title', 'Updated author', 'ABCD',
-#              'Updated genre', '33333',),  # year non numeric
-#             ('Updated title', 'Updated author', '2025', 'Updated genre',
-#              '33333',),  # year greatter than current year
-#             ('Updated title', 'Updated author', '99', 'Updated genre',
-#              '33333',),  # year less than current year
-#         ]
-#     )
-#     def test_update_book_raises_ValueError_when_a_field_fails_data_validation(self, setup_books_update, title, author, year, genre, code):
-#         book = setup_books_update.search_by_book_code(code)
-#         assert book in setup_books_update.list_books(), "book must be register in database"
+        result = controller.update_book('01010101')
 
-#         with pytest.raises(ValueError):
-#             setup_books_update.update_book(code, title, author, year, genre)
+        self.assertFalse(result)
 
-#     def test_update_book_returns_none_when_doesnt_find_the_searched_book(self, setup_books_update):
-#         update_return = setup_books_update.update_book(
-#             '999999')  # non-existent code
-#         assert update_return is None
+    def test_validate_book_fields_raises_value_error_if_any_field_is_invalid(self):
+        controller = BookController()
+
+        test_data = [
+            ('123465', 'Updated author', 2024,'Updated genre', '11111'),  # title numeric
+            ('Updated title', '123456', 2024,'Updated genre', '22222'),  # author numeric
+            ('Updated title', 'Updated author', 2024,'123456', '44444'),  # genre numeric
+
+            ('Updated title', 'Updated author', 'ABCD','Updated genre', '33333',),  # year non numeric
+            ('Updated title', 'Updated author', 2025, 'Updated genre','33333',),  # year greatter than current year
+            ('Updated title', 'Updated author', 99, 'Updated genre','33333',),  # year less than current year
+        ]
+        for title, author, year, genre, code in test_data:
+            with pytest.raises(ValueError):
+                controller.validate_book_fields(title, author, year, genre, code)
 
 
 # class TestUserController():
