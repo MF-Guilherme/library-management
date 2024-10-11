@@ -95,25 +95,24 @@ def delete_book(controller):
 
 
 def update_book(controller):
-    ipt_code = input('Enter the book ISBN code you want to update: ')
-    print('-' * 85)
-    book = controller.search_by_book_code(ipt_code)
-    if book:
-        new_title = prompt(
-            "Book Title: ", default=book.title).strip() or book.title
-        new_author = prompt(
-            "Author: ", default=book.author).strip() or book.author
-        new_year = prompt("Publication Year: ",
-                          default=book.year).strip() or book.year
-        new_genre = prompt("Literary genre: ",
-                           default=book.genre).strip() or book.genre
+    try:
+        ipt_code = input('Enter the book ISBN code you want to update: ')
         print('-' * 85)
-        controller.update_book(ipt_code, new_title,
-                               new_author, new_year, new_genre)
-        print('Book updated')
-    else:
-        print("Book not found")
-
+        book = controller.search_by_book_code(ipt_code)
+        if book:
+                new_title = prompt("Book Title: ", default=book[1]).strip() or book[1]
+                new_author = prompt("Author: ", default=book[2]).strip() or book[2]
+                new_year = prompt("Publication Year: ", default=str(book[3])).strip() or book[3]
+                new_genre = prompt("Literary genre: ", default=book[4]).strip() or book[4]
+                print('-' * 85)
+                controller.update_book(ipt_code, new_title, new_author, new_year, new_genre)
+                print('Book updated')
+        else:
+            print("Book not found")
+    except ValueError as e:
+        print(f"Error: {e}")
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
 # USER VIEWS
 
 
