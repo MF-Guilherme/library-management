@@ -195,7 +195,7 @@ class TestBookController(unittest.TestCase):
         mock_search_by_book_code.return_value = (1, 'Title', 'Author', 1900, 'Genre', '456789123')
         result = controller.delete_book('456789123')
 
-        mock_cursor.execute.assert_called_once_with('DELETE FROM books WHERE isbn_code = %s', '456789123')
+        mock_cursor.execute.assert_called_once_with('DELETE FROM books WHERE isbn_code = %s', ('456789123', ))
         self.assertTrue(result)
 
     @patch('Controllers.controllers.BookController.search_by_book_code')
