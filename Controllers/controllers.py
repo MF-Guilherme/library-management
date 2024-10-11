@@ -108,9 +108,12 @@ class BookController():
             return True
 
     def delete_book(self, code):
+        query = "DELETE FROM books WHERE isbn_code = %s"
         book = self.search_by_book_code(code)
         if book:
-            self.db.remove(book)
+            with self.conn:
+                with self.conn.cursor() as cursor:
+                    cursor.execute(query, (code, ))
             return True
         return False
 

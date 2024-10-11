@@ -181,16 +181,33 @@ class TestBookController(unittest.TestCase):
         mock_cursor.execute.assert_called_once_with('SELECT * FROM books WHERE isbn_code = %s', ('2223335544', ))
         self.assertIsNone(result)
 
-#     def test_delete_book_deletes_the_given_book_from_the_db(self, setup_book):
-#         book = setup_book.search_by_book_code('123456')
-#         setup_book.delete_book(book.isbn_code)
-#         list_books = setup_book.list_books()
-#         assert book not in list_books
+    @patch('Controllers.controllers.get_connection')
+    @patch('Controllers.controllers.BookController.search_by_book_code')
+    def test_delete_book_deletes_the_given_book_from_the_db(self, mock_search_by_book_code, mock_get_connection):
+        mock_conn = MagicMock()
+        mock_cursor = MagicMock()
+        mock_conn.__enter__.return_value = mock_conn
+        mock_conn.cursor.return_value.__enter__.return_value = mock_cursor
+        mock_get_connection.return_value = mock_conn
 
-#     def test_delete_book_returns_false_if_doesnt_find_the_searched_book(self, setup_book):
-#         book_code = '111111'
-#         ret = setup_book.delete_book(book_code)
-#         assert ret is False
+        controller = BookController()
+
+        mock_search_by_book_code.return_value = (1, 'Title', 'Author', 1900, 'Genre', '456789123')
+        result = controller.delete_book('456789123')
+
+        mock_cursor.execute.assert_called_once_with('DELETE FROM books WHERE isbn_code = %s', '456789123')
+        self.assertTrue(result)
+
+    @patch('Controllers.controllers.BookController.search_by_book_code')
+    def test_delete_book_returns_false_if_doesnt_find_the_searched_book(self, mock_search_by_book_code):
+        mock_search_by_book_code.return_value = None
+
+        controller = BookController()
+
+        result = controller.delete_book('01010101')
+
+        self.assertFalse(result)
+        
 
 #     def test_update_book_with_valid_data(self, setup_book):
 #         book = setup_book.search_by_book_code('123456')

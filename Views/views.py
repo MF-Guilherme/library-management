@@ -67,7 +67,7 @@ def show_books(controller):
     if books:
         print("All books list:")
         print()
-        for book in books:
+        for book in sorted(books, reverse=True):
             print(f'ISBN Code: {book[5]:<13} | Title: {book[1]:<20} | Author: {book[2]:<20} |')
     else:
         print('There are no books registered yet')
