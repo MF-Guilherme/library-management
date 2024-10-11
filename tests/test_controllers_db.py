@@ -2,6 +2,7 @@ from Models.models import User
 from Controllers.controllers import BookController, UserController
 from Exceptions.exceptions import DuplicateError, LenOfPhoneError, EmailFormatError
 from unittest.mock import patch, MagicMock
+from unittest import mock
 import pytest, unittest
 
 
@@ -208,18 +209,31 @@ class TestBookController(unittest.TestCase):
 
         self.assertFalse(result)
         
+    @patch('Controllers.controllers.get_connection')    
+    @patch('Controllers.controllers.BookController.search_by_book_code')
+    def test_update_book_with_valid_data(self, mock_search_by_book_code, mock_get_connection):
+        mock_conn = MagicMock()
+        mock_cursor = MagicMock()
 
-#     def test_update_book_with_valid_data(self, setup_book):
-#         book = setup_book.search_by_book_code('123456')
-#         update_return = setup_book.update_book(
-#             book.isbn_code, 'Updated title', 'Updated author', '2024', 'Updated genre')
-#         updated_book = setup_book.search_by_book_code('123456')
+        mock_conn.__enter__.return_value = mock_conn
+        mock_conn.cursor.return_value.__enter__.return_value = mock_cursor
+        mock_get_connection.return_value = mock_conn
 
-#         assert update_return is True
-#         assert updated_book.title == 'Updated title'
-#         assert updated_book.author == 'Updated author'
-#         assert updated_book.year == '2024'
-#         assert updated_book.genre == 'Updated genre'
+        returned_book = (1, 'title', 'author', 1980, 'genre', '45678913455')
+
+        controller = BookController()
+        mock_search_by_book_code.return_value = returned_book
+
+        result = controller.update_book(returned_book[5], 'Updated title', 'Updated author', 1981, 'Updated genre')
+        
+        mock_cursor.execute.assert_called_once_with("""
+                 UPDATE books SET (title, author, year, genre) = (%s, %s, %s, %s)
+                 WHERE isbn_code = %s;
+                 """, 
+                 ('Updated title', 'Updated author', 1981, 'Updated genre', '45678913455', )
+                 )
+        self.assertTrue(result)
+
 
 #     @pytest.mark.parametrize(
 #         "title, author, year, genre, code",
