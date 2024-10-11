@@ -198,11 +198,16 @@ class TestBookController(unittest.TestCase):
         mock_cursor.execute.assert_called_once_with('DELETE FROM books WHERE isbn_code = %s', '456789123')
         self.assertTrue(result)
 
+    @patch('Controllers.controllers.BookController.search_by_book_code')
+    def test_delete_book_returns_false_if_doesnt_find_the_searched_book(self, mock_search_by_book_code):
+        mock_search_by_book_code.return_value = None
 
-#     def test_delete_book_returns_false_if_doesnt_find_the_searched_book(self, setup_book):
-#         book_code = '111111'
-#         ret = setup_book.delete_book(book_code)
-#         assert ret is False
+        controller = BookController()
+
+        result = controller.delete_book('01010101')
+
+        self.assertFalse(result)
+        
 
 #     def test_update_book_with_valid_data(self, setup_book):
 #         book = setup_book.search_by_book_code('123456')
