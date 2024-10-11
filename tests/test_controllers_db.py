@@ -30,8 +30,6 @@ class TestBookController(unittest.TestCase):
             ('Title', 'Author', 1990, 'Genre', '123456')
             )
         
-        mock_conn.__exit__.assert_called_once() # Verifica se o with foi encerrado com commit ou rollback
-        
     @patch('Controllers.controllers.BookController.search_by_book_code')
     def test_add_book_raises_duplicate_book_error_when_isbn_code_alredy_registered(self, mock_search_by_book_code):
         mock_search_by_book_code.return_value = ('Some Title', 'Some Author', 1900, 'Some Genre', '789465')
@@ -103,23 +101,85 @@ class TestBookController(unittest.TestCase):
         with pytest.raises(ValueError):
             controller.add_book(
                 'Some Title', 'Some Author', '99', 'Some Genre', '123456')
+    
+    @patch('Controllers.controllers.get_connection')
+    def test_list_all_books_returns_none_if_there_arent_books(self, mock_get_connection):
+        
+        mock_conn = MagicMock()
+        mock_cursor = MagicMock()
 
-#     def test_list_books_returns_empty_list_when_no_books_are_added(self, book_controller):
-#         assert book_controller.list_books() == [], "Should return an empty list"
+        mock_conn.__enter__.return_value = mock_conn
+        mock_conn.cursor.return_value.__enter__.return_value = mock_cursor
+        mock_get_connection.return_value = mock_conn
 
-#     def test_list_books_returns_list_of_books_after_adding_books(self, setup_book):
-#         book1 = setup_book.search_by_book_code('123456')
-#         book2 = setup_book.search_by_book_code('789465')
-#         assert setup_book.list_books() == [
-#             book1, book2], "The books list does not contain the expected books"
+        mock_cursor.fetchall.return_value = []
 
-#     def test_search_book_by_code_returns_the_searched_book(self, setup_book):
-#         book = setup_book.search_by_book_code('789465')
-#         assert setup_book.list_books()[1] == book
+        controller = BookController()
+        result = controller.list_all_books()
 
-#     def test_search_book_by_code_returns_none_if_doesnt_find_the_inputted_book_code(self, setup_book):
-#         book = setup_book.search_by_book_code('456123')
-#         assert book is None
+        mock_cursor.execute.assert_called_once_with('SELECT * FROM books')
+        self.assertIsNone(result)
+
+    @patch('Controllers.controllers.get_connection')
+    def test_list_all_books_returns_list_of_books(self, mock_get_connection):
+        
+        mock_conn = MagicMock()
+        mock_cursor = MagicMock()
+
+        mock_conn.__enter__.return_value = mock_conn
+        mock_conn.cursor.return_value.__enter__.return_value = mock_cursor
+        mock_get_connection.return_value = mock_conn
+
+        book1 = (1, 'Title', 'Author', 1900, 'Genre', '1234567891')
+        book2 = (2, 'Other Title', 'Other Author', 1900, 'Other Genre', '9874562131')
+        
+        mock_cursor.fetchall.return_value = [book1, book2]
+
+        controller = BookController()
+        result = controller.list_all_books()
+
+        mock_cursor.execute.assert_called_once_with('SELECT * FROM books')
+        self.assertEqual(len(result), 2)
+        self.assertEqual(result[0], book1)
+        self.assertEqual(result[1], book2)
+
+    @patch('Controllers.controllers.get_connection')
+    def test_search_book_by_code_returns_the_searched_book(self, mock_get_connection):
+        
+        mock_conn = MagicMock()
+        mock_cursor = MagicMock()
+
+        mock_conn.__enter__.return_value = mock_conn
+        mock_conn.cursor.return_value.__enter__.return_value = mock_cursor
+        mock_get_connection.return_value = mock_conn
+
+        expected_result = (3, 'Title', 'J.K', 1978, 'Fict', '789456123')
+        mock_cursor.fetchone.return_value = expected_result
+
+        controller = BookController()
+
+        result = controller.search_by_book_code('789456123')
+
+        mock_cursor.execute.assert_called_once_with('SELECT * FROM books WHERE isbn_code = %s', ('789456123',))        
+        self.assertEqual(result, expected_result)
+
+    @patch('Controllers.controllers.get_connection')
+    def test_search_book_by_code_returns_none_if_doesnt_find_the_inputted_book_code(self, mock_get_connection):
+        mock_conn = MagicMock()
+        mock_cursor = MagicMock()
+
+        mock_conn.__enter__.return_value = mock_conn
+        mock_conn.cursor.return_value.__enter__.return_value = mock_cursor
+        mock_get_connection.return_value = mock_conn
+
+        mock_cursor.fetchone.return_value = None
+
+        controller = BookController()
+
+        result = controller.search_by_book_code('2223335544')
+
+        mock_cursor.execute.assert_called_once_with('SELECT * FROM books WHERE isbn_code = %s', ('2223335544', ))
+        self.assertIsNone(result)
 
 #     def test_delete_book_deletes_the_given_book_from_the_db(self, setup_book):
 #         book = setup_book.search_by_book_code('123456')
