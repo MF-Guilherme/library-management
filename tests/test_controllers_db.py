@@ -15,8 +15,6 @@ class TestBookController(unittest.TestCase):
         with pytest.raises(Exception, match="Failed to establish database connection"):
             controller = BookController()
 
-
-
     @patch('Controllers.controllers.get_connection')
     @patch('Controllers.controllers.BookController.search_by_book_code')
     def test_add_book_with_valid_data(self, mock_search_by_book_code, mock_get_connection):
@@ -279,23 +277,23 @@ class TestUserController(unittest.TestCase):
         with pytest.raises(Exception, match="Failed to establish database connection"):
             controller = UserController()
 
-#     @pytest.fixture
-#     def setup_user(self, user_controller):
-#         # name, email, phone, user_code
-#         user_controller.register_user(
-#             'Some Name', 'someemail@test.com', '11912345678', '1000')
-#         user_controller.register_user(
-#             'Other Name', 'otheremail@test.com', '1133334444', '1001')
-#         return user_controller
+    @patch('Controllers.controllers.get_connection')
+    @patch('Controllers.controllers.UserController.find_by_user_code')
+    def test_register_user_register_with_valid_fields(self, mock_find_by_user_code, mock_get_connection):
+        mock_conn = MagicMock()
+        mock_cursor = MagicMock()
 
-#     def test_register_user_register_with_valid_fields(self, user_controller):
-#         user_controller.register_user(
-#             'Some Name', 'someemail@test.com', '11912345678', '1000')
-#         user = user_controller.list_users()[0]
-#         assert user.name == 'Some Name'
-#         assert user.email == 'someemail@test.com'
-#         assert user.phone == '11912345678'
-#         assert user.user_code == '1000'
+        mock_conn.__enter__.return_value = mock_conn
+        mock_conn.cursor.return_value.__enter__.return_value = mock_cursor
+
+        mock_get_connection.return_value = mock_conn        
+        mock_find_by_user_code.return_value = None
+
+        controller = UserController()
+
+        result = controller.register_user('Name', 'email@test.com', '11977774444', '1000')
+
+        assert result == "Success! User registered."
 
 #     @pytest.mark.parametrize(
 #         "name, email, phone, user_code",
