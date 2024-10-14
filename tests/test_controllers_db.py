@@ -464,7 +464,7 @@ class TestUserController(unittest.TestCase):
         
         result = controller.find_by_user_code(1000)
 
-        mock_cursor.execute.assert_called_once_with("SELECT * FROM users WHERE user_code = %s;", 1000)
+        mock_cursor.execute.assert_called_once_with("SELECT * FROM users WHERE user_code = %s;", (1000, ))
         self.assertEqual(result, expected_result)
 
     @patch("Controllers.controllers.get_connection")
@@ -481,18 +481,40 @@ class TestUserController(unittest.TestCase):
         controller = UserController()
 
         result = controller.find_by_user_code(789123)
-        mock_cursor.execute.assert_called_once_with("SELECT * FROM users WHERE user_code = %s;", 789123)
+        mock_cursor.execute.assert_called_once_with("SELECT * FROM users WHERE user_code = %s;", (789123, ))
         self.assertIsNone(result)
 
-#     def test_delete_user(self, setup_user):
-#         delete_code = '1000'
-#         assert setup_user.find_by_user_code(delete_code) in setup_user.db
-#         assert setup_user.delete_user(delete_code) is True
-#         assert setup_user.find_by_user_code(delete_code) not in setup_user.db
-    
-#     def test_delete_user_returns_false_if_user_code_doesnt_exists(self, setup_user):
-#         delete_code = '123456'
-#         assert setup_user.delete_user(delete_code) is False
+    @patch("Controllers.controllers.UserController.find_by_user_code")
+    @patch("Controllers.controllers.get_connection")
+    def test_delete_user(self, mock_get_connection, mock_find_by_user_code):
+        mock_conn = MagicMock()
+        mock_cursor = MagicMock()
+
+        mock_conn.__enter__.return_value = mock_conn
+        mock_conn.cursor.return_value.__enter__.return_value = mock_cursor
+
+        expected_result = MagicMock()
+
+        mock_get_connection.return_value = mock_conn    
+        mock_find_by_user_code.return_value = expected_result
+
+        controller = UserController()
+
+        result = controller.delete_user(1000)
+
+        mock_cursor.execute.assert_called_once_with("DELETE FROM users WHERE user_code = %s;", (1000, ))
+        self.assertTrue(result)
+
+    @patch("Controllers.controllers.UserController.find_by_user_code")
+    def test_delete_user_returns_false_if_user_code_doesnt_exists(self, mock_find_by_user_code):
+
+        mock_find_by_user_code.return_value = False
+
+        controller = UserController()
+
+        result = controller.delete_user(97864216)
+
+        self.assertFalse(result)
 
 #     def test_update_user(self, setup_user):
 #         user = setup_user.find_by_user_code('1000')
