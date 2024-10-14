@@ -136,28 +136,37 @@ def user_register(controller):
         print(f'Error: {e}')
     except LenOfPhoneError as e:
         print(f'Error: {e}')
+    except TypeError as e:
+        print(f'Error: {e}')
+    except Exception as e:
+        print(f"Error {e}")
 
 
 def show_users(controller):
-    users = controller.list_users()
-    if users:
-        for user in users:
-            print(f'Name: {user.name} | Email: {
-                  user.email} | User code: {user.user_code}')
-    else:
-        print('There are no users registered yet')
-
+    try:
+        users = controller.list_users()
+        if users:
+            for user in users:
+                print(f'User code: {user[4]:<6} | Name: {user[1]:<30} | Email: {user[2]:<20} |')
+        else:
+            print('There are no users registered yet')
+    except Exception as e:
+        print(f"Error: {e}")
 
 def search_user(controller):
     ipt_code = input('Enter the user code: ')
     print('-' * 85)
-    user = controller.find_by_user_code(ipt_code)
-    if user:
-        print(f' User code: {user.user_code} | Name: {user.name} | Email: {
-              user.email} | Phone number: {user.phone}')
+    if not ipt_code.isnumeric():
+        print('User code must contain just numbers')
     else:
-        print('User not found')
-
+        try:
+            user = controller.find_by_user_code(ipt_code)
+            if user:
+                print(f'User code: {user[4]} | Name: {user[1]} | Email: {user[2]} | Phone number: {user[3]}')
+            else:
+                print('User not found')
+        except Exception as e:
+            print(f"Error: {e}")
 
 def delete_user(controller):
     ipt_code = input('Enter the user code you want to delete: ')
