@@ -164,9 +164,11 @@ class UserController():
     def register_user(self, name, email, phone, user_code):
         if self.find_by_user_code(user_code):
             raise DuplicateError(user_code, entity="User")
-        self.validate_user_fields(name, email, phone, user_code)
-        user = User(name, email, phone, user_code)
-        self.db.append(user)
+        with self.conn:
+            with self.conn.cursor() as cursor:
+                query = "INSERT INTO users (name, email, phone, user_code) VALUES (%s, %s, %s, %s);"
+                cursor.execute(query, (name, email, phone, user_code, ))
+        return "Success! User registered."
 
     def list_users(self):
         return self.db
