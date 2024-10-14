@@ -291,9 +291,11 @@ class TestUserController(unittest.TestCase):
 
         controller = UserController()
 
-        result = controller.register_user('Name', 'email@test.com', '11977774444', '1000')
+        result = controller.register_user('Name', 'email@test.com', '11977774444', 1000)
 
-        assert result == "Success! User registered."
+        mock_cursor.execute.assert_called_once_with("INSERT INTO users (name, email, phone, user_code) VALUES (%s, %s, %s, %s);", ('Name', 'email@test.com', '11977774444', 1000))
+        self.assertEqual(result, "Success! User registered.")
+
 
 #     @pytest.mark.parametrize(
 #         "name, email, phone, user_code",
