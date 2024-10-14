@@ -270,11 +270,14 @@ class TestBookController(unittest.TestCase):
                 controller.validate_book_fields(title, author, year, genre, code)
 
 
-# class TestUserController():
+class TestUserController(unittest.TestCase):
 
-#     @pytest.fixture
-#     def user_controller(self):
-#         return UserController()
+    @patch('Controllers.controllers.get_connection')
+    def test_connection_failed(self, mock_get_connection):    
+        mock_get_connection.return_value = None
+
+        with pytest.raises(Exception, match="Failed to establish database connection"):
+            controller = UserController()
 
 #     @pytest.fixture
 #     def setup_user(self, user_controller):
