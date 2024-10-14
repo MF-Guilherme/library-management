@@ -75,10 +75,7 @@ class BookController():
             with self.conn.cursor() as cursor:
                 cursor.execute(query)
                 result = cursor.fetchall()
-        if result:
-            return result
-        else:
-            return None
+        return result if result else None
 
     def search_by_book_code(self, code):
         query = "SELECT * FROM books WHERE isbn_code = %s"
@@ -86,10 +83,7 @@ class BookController():
             with self.conn.cursor() as cursor:
                 cursor.execute(query, (code, ))
                 result = cursor.fetchone()
-        if result:
-            return result
-        else:
-            return None
+        return result
           
     def update_book(self, code, title=None, author=None, year=None, genre=None):
         query = ("""
@@ -172,17 +166,20 @@ class UserController():
         return "Success! User registered."
 
     def list_users(self):
-        return self.db
-
-    def find_by_user_code(self, user_code):
-        query = "SELECT * FROM users WHERE user_code = %s"
+        query = "SELECT * FROM users"
         with self.conn:
             with self.conn.cursor() as cursor:
-                user = cursor.execute(query, user_code).fetchone()
-        if user:
-            return user
-        else:
-            return None
+                cursor.execute(query, ())
+                result = cursor.fetchall()
+        return result
+        
+    def find_by_user_code(self, user_code):
+        query = "SELECT * FROM users WHERE user_code = %s;"
+        with self.conn:
+            with self.conn.cursor() as cursor:
+                cursor.execute(query, user_code)
+                user = cursor.fetchone()
+        return user
 
     def delete_user(self, user_code):
         user = self.find_by_user_code(user_code)

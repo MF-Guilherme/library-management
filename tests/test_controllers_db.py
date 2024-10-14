@@ -425,29 +425,64 @@ class TestUserController(unittest.TestCase):
         with pytest.raises(DuplicateError):
             controller.register_user('Some Name', 'someemail@test.com', '11999994444', 1000)
 
-#     def test_list_users_returns_a_list_of_users(self, setup_user):
-#         users = setup_user.list_users()
+    @patch('Controllers.controllers.get_connection')
+    def test_list_users_returns_a_list_of_users(self, mock_get_connection):
+        mock_conn = MagicMock()
+        mock_cursor = MagicMock()
 
-#         assert type(setup_user.list_users()) == list
-#         assert isinstance(users[0], User)
-#         assert isinstance(users[1], User)
+        mock_conn.__enter__.return_value = mock_conn
+        mock_conn.cursor.return_value.__enter__.return_value = mock_cursor
+        mock_get_connection.return_value = mock_conn
 
-#     def test_find_by_user_code_returns_a_user(self, setup_user):
-#         user1 = setup_user.find_by_user_code('1000')
-#         user2 = setup_user.find_by_user_code('1001')
+        user1 = ('User One', 'uone@test.com', '12345678910', 1000),
+        user2 = ('User Two', 'utwo@test.com', '10987654321', 1001),
 
-#         assert isinstance(user1, User)
-#         assert user1.name == 'Some Name'
-#         assert user1.email == 'someemail@test.com'
-#         assert user1.phone == '11912345678'
+        mock_cursor.fetchall.return_value = [user1, user2]
 
-#         assert isinstance(user2, User)
-#         assert user2.name == 'Other Name'
-#         assert user2.email == 'otheremail@test.com'
-#         assert user2.phone == '1133334444'
+        controller = UserController()
 
-#     def test_find_by_user_code_returns_none_if_it_doesnt_exists(self, setup_user):
-#         assert setup_user.find_by_user_code('123465') is None
+        result = controller.list_users()
+        mock_cursor.execute.assert_called_once_with("SELECT * FROM users", ())
+        self.assertEqual(type(result), list)
+        self.assertEqual(result[0], user1)
+        self.assertEqual(result[1], user2)
+
+    @patch("Controllers.controllers.get_connection")
+    def test_find_by_user_code_returns_a_user(self, mock_get_connection):
+        mock_conn = MagicMock()
+        mock_cursor = MagicMock()
+
+        mock_conn.__enter__.return_value = mock_conn
+        mock_conn.cursor.return_value.__enter__.return_value = mock_cursor
+        mock_get_connection.return_value = mock_conn
+
+        expected_result = ('User One', 'uone@test.com', '12345678910', 1000)
+
+        mock_cursor.fetchone.return_value = expected_result
+
+        controller = UserController()
+        
+        result = controller.find_by_user_code(1000)
+
+        mock_cursor.execute.assert_called_once_with("SELECT * FROM users WHERE user_code = %s;", 1000)
+        self.assertEqual(result, expected_result)
+
+    @patch("Controllers.controllers.get_connection")
+    def test_find_by_user_code_returns_none_if_it_doesnt_exists(self, mock_get_connection):
+        mock_conn = MagicMock()
+        mock_cursor = MagicMock()
+
+        mock_conn.__enter__.return_value = mock_conn
+        mock_conn.cursor.return_value.__enter__.return_value = mock_cursor
+        mock_get_connection.return_value = mock_conn
+
+        mock_cursor.fetchone.return_value = None
+
+        controller = UserController()
+
+        result = controller.find_by_user_code(789123)
+        mock_cursor.execute.assert_called_once_with("SELECT * FROM users WHERE user_code = %s;", 789123)
+        self.assertIsNone(result)
 
 #     def test_delete_user(self, setup_user):
 #         delete_code = '1000'
