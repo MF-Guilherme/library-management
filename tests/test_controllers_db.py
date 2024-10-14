@@ -296,74 +296,134 @@ class TestUserController(unittest.TestCase):
         mock_cursor.execute.assert_called_once_with("INSERT INTO users (name, email, phone, user_code) VALUES (%s, %s, %s, %s);", ('Name', 'email@test.com', '11977774444', 1000))
         self.assertEqual(result, "Success! User registered.")
 
+    @patch('Controllers.controllers.get_connection')
+    @patch('Controllers.controllers.UserController.find_by_user_code')
+    def test_register_user_empty_fields_validation(self, mock_find_by_user_code, mock_get_connection):
+        mock_conn = MagicMock()
+        mock_cursor = MagicMock()
 
-#     @pytest.mark.parametrize(
-#         "name, email, phone, user_code",
-#         [
-#             ('', 'someemail@test.com', '11912345678', '1000'),  # name empty
-#             ('Other Name', '', '11987654321', '1001'),  # email empty
-#             ('Other Name', 'otheremail@test.com', '', '1002'),  # phone empty
-#             ('Other Name', 'otheremail@test.com',
-#              '11987654321', ''),  # user_code empty
-#         ]
-#     )
-#     def test_register_user_empty_fields_validation(self, user_controller, name, email, phone, user_code):
-#         with pytest.raises(ValueError):
-#             user_controller.register_user(name, email, phone, user_code)
+        mock_conn.__enter__.return_value = mock_conn
+        mock_conn.cursor.return_value.__enter__.return_value = mock_cursor
 
-#     @pytest.mark.parametrize(
-#         "name, email, phone, user_code",
-#         [
-#             ('123456', 'someemail@test.com',
-#              '11912345678', '1000'),  # name is numeric
-#             ('Other Name', '123465', '11987654321', '1001')  # email is numeric
-#         ]
-#     )
-#     def test_register_user_raises_value_error_if_name_and_email_are_numerics(self, user_controller, name, email, phone, user_code):
-#         with pytest.raises(ValueError):
-#             user_controller.register_user(name, email, phone, user_code)
+        mock_get_connection.return_value = mock_conn    
+        mock_find_by_user_code.return_value = None
+        controller = UserController()
+        
+        test_data = [
+            ('', 'someemail@test.com', '11912345678', 1000),  # name empty
+            ('Other Name', '', '11987654321', 1001),  # email empty
+            ('Other Name', 'otheremail@test.com', '', 1002),  # phone empty
+            ('Other Name', 'otheremail@test.com', '11987654321', ''),  # user_code empty
+        ]
+        for name, email, phone, user_code in test_data:
+            with pytest.raises(ValueError):
+                controller.register_user(name, email, phone, user_code)
 
-#     @pytest.mark.parametrize(
-#         "name, email, phone, user_code",
-#         [
-#             ('Some Name', 'someemail@test.com', '(11)999994444', '1000'),
-#             ('Other Name', 'otheremail@test.com', '11987654321', 'CODE1234')
-#         ]
-#     )
-#     def test_register_user_raises_value_error_if_phone_and_user_code_arent_numerics(self, user_controller, name, email, phone, user_code):
-#         with pytest.raises(ValueError):
-#             user_controller.register_user(name, email, phone, user_code)
+    @patch('Controllers.controllers.get_connection')
+    @patch('Controllers.controllers.UserController.find_by_user_code')
+    def test_register_user_raises_value_error_if_name_and_email_are_numerics(self, mock_find_by_user_code, mock_get_connection):
+        mock_conn = MagicMock()
+        mock_cursor = MagicMock()
 
-#     @pytest.mark.parametrize(
-#         "name, email, phone, user_code",
-#         [
-#             ('Some Name', 'someemail@test.com',
-#              '119999944444', '1000'),  # phone with 12 numbers
-#             ('Other Name', 'otheremail@test.com',
-#              '113333555', '1001'),  # phone with 9 numbers
-#         ]
-#     )
-#     def test_register_user_len_of_phone_is_ten_or_eleven(self, user_controller, name, email, phone, user_code):
-#         with pytest.raises(LenOfPhoneError):
-#             user_controller.register_user(name, email, phone, user_code)
+        mock_conn.__enter__.return_value = mock_conn
+        mock_conn.cursor.return_value.__enter__.return_value = mock_cursor
 
-#     @pytest.mark.parametrize(
-#         "name, email, phone, user_code",
-#         [
-#             # ('Some Name', 'someemail@test.com', '11999994444', '1000'), # correct format
-#             # ('Other Name', 'otheremail@test.com.br', '1133335555', '1001'), # correct format
-#             ('Some Name', 'someemailtest.com', '11999994444', '1000'),
-#             ('Other Name', 'otheremail@testcombr', '1133335555', '1001'),
-#         ]
-#     )
-#     def test_register_user_return_format_email_error_if_it_isnt_valid(self, user_controller, name, email, phone, user_code):
-#         with pytest.raises(EmailFormatError):
-#             user_controller.register_user(name, email, phone, user_code)
+        mock_get_connection.return_value = mock_conn    
+        mock_find_by_user_code.return_value = None
+        controller = UserController()
+        
+        test_data = [
+            ('123456', 'someemail@test.com', '11912345678', 1000),  # name is numeric
+            ('Other Name', '123465', '11987654321', 1001)  # email is numeric
+        ]
+        for name, email, phone, user_code in test_data:
+            with pytest.raises(ValueError):
+                controller.register_user(name, email, phone, user_code)
 
+    @patch('Controllers.controllers.get_connection')
+    @patch('Controllers.controllers.UserController.find_by_user_code')
+    def test_register_user_raises_value_error_if_phone_and_user_code_arent_numerics(self, mock_find_by_user_code, mock_get_connection):
+        mock_conn = MagicMock()
+        mock_cursor = MagicMock()
 
-#     def test_register_user_duplicated_user_code(self, setup_user):
-#         with pytest.raises(DuplicateError):
-#             setup_user.register_user('Some Name', 'someemail@test.com', '11999994444', '1000')
+        mock_conn.__enter__.return_value = mock_conn
+        mock_conn.cursor.return_value.__enter__.return_value = mock_cursor
+
+        mock_get_connection.return_value = mock_conn    
+        mock_find_by_user_code.return_value = None
+        controller = UserController()
+        
+        test_data = [
+            ('Some Name', 'someemail@test.com', '(11)999994444', 1000),
+            ('Other Name', 'otheremail@test.com', '11987654321', 'ABCD'),
+            ('Other Name', 'otheremail@test.com', '11987654321', '1000'), # user_code type is str
+        ]
+        for name, email, phone, user_code in test_data:
+            with pytest.raises(Exception):
+                controller.register_user(name, email, phone, user_code)
+
+    @patch('Controllers.controllers.get_connection')
+    @patch('Controllers.controllers.UserController.find_by_user_code')
+    def test_register_user_len_of_phone_is_ten_or_eleven(self, mock_find_by_user_code, mock_get_connection):
+        mock_conn = MagicMock()
+        mock_cursor = MagicMock()
+
+        mock_conn.__enter__.return_value = mock_conn
+        mock_conn.cursor.return_value.__enter__.return_value = mock_cursor
+
+        mock_get_connection.return_value = mock_conn    
+        mock_find_by_user_code.return_value = None
+        controller = UserController()
+        
+        test_data = [
+            ('Some Name', 'someemail@test.com', '119999944444', 1000),  # phone with 12 numbers
+            ('Other Name', 'otheremail@test.com', '113333555', 1001),  # phone with 9 numbers
+        ]
+        for name, email, phone, user_code in test_data:
+            with pytest.raises(LenOfPhoneError):
+                controller.register_user(name, email, phone, user_code)
+
+    @patch('Controllers.controllers.get_connection')
+    @patch('Controllers.controllers.UserController.find_by_user_code')
+    def test_register_user_return_format_email_error_if_it_isnt_valid(self, mock_find_by_user_code, mock_get_connection):
+        mock_conn = MagicMock()
+        mock_cursor = MagicMock()
+
+        mock_conn.__enter__.return_value = mock_conn
+        mock_conn.cursor.return_value.__enter__.return_value = mock_cursor
+
+        mock_get_connection.return_value = mock_conn    
+        mock_find_by_user_code.return_value = None
+        controller = UserController()
+        
+        test_data = [
+            # ('Some Name', 'someemail@test.com', '11999994444', '1000'), # correct format
+            # ('Other Name', 'otheremail@test.com.br', '1133335555', '1001'), # correct format
+            ('Some Name', 'someemailtest.com', '11999994444', 1000),
+            ('Other Name', 'otheremail@testcombr', '1133335555', 1001),
+        ]
+        for name, email, phone, user_code in test_data:
+            with pytest.raises(EmailFormatError):
+                controller.register_user(name, email, phone, user_code)
+
+    @patch("Controllers.controllers.UserController.find_by_user_code")
+    @patch("Controllers.controllers.get_connection")
+    def test_register_user_duplicated_user_code(self, mock_get_connection, mock_find_by_user_code):
+        mock_conn = MagicMock()
+        mock_cursor = MagicMock()
+
+        mock_conn.__enter__.return_value = mock_conn
+        mock_conn.cursor.return_value.__enter__.return_value = mock_cursor
+
+        expected_result = ('Some Name', 'someemail@test.com', '11999994444', 1000)
+
+        mock_get_connection.return_value = mock_conn    
+        mock_find_by_user_code.return_value = expected_result
+
+        controller = UserController()
+
+        with pytest.raises(DuplicateError):
+            controller.register_user('Some Name', 'someemail@test.com', '11999994444', 1000)
 
 #     def test_list_users_returns_a_list_of_users(self, setup_user):
 #         users = setup_user.list_users()
