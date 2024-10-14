@@ -118,8 +118,12 @@ class BookController():
 
 
 class UserController():
-    def __init__(self) -> None:
-        self.db = []
+    def __init__(self) -> None:    
+        self.conn = get_connection()
+        if self.conn is not None:
+            self.cursor = self.conn.cursor()
+        else:
+            raise Exception("Failed to establish database connection")
 
     def validate_empty_fields(self, name, email, phone, user_code):
         if not name or not email or not phone or not user_code:
@@ -137,8 +141,8 @@ class UserController():
         if not phone.isnumeric():
             raise ValueError(
                 "Not registered! Phone field must contain just numbers")
-        if not user_code.isnumeric():
-            raise ValueError(
+        if type(user_code) is not int :
+            raise TypeError(
                 "Not registered! User code field must contain just numbers")
 
     def validate_len_phone(self, phone):
@@ -160,18 +164,25 @@ class UserController():
     def register_user(self, name, email, phone, user_code):
         if self.find_by_user_code(user_code):
             raise DuplicateError(user_code, entity="User")
-        self.validate_user_fields(name, email, phone, user_code)
-        user = User(name, email, phone, user_code)
-        self.db.append(user)
+        with self.conn:
+            with self.conn.cursor() as cursor:
+                self.validate_user_fields(name, email, phone, user_code)
+                query = "INSERT INTO users (name, email, phone, user_code) VALUES (%s, %s, %s, %s);"
+                cursor.execute(query, (name, email, phone, user_code, ))
+        return "Success! User registered."
 
     def list_users(self):
         return self.db
 
     def find_by_user_code(self, user_code):
-        for user in self.db:
-            if user.user_code == user_code:
-                return user
-        return None
+        query = "SELECT * FROM users WHERE user_code = %s"
+        with self.conn:
+            with self.conn.cursor() as cursor:
+                user = cursor.execute(query, user_code).fetchone()
+        if user:
+            return user
+        else:
+            return None
 
     def delete_user(self, user_code):
         user = self.find_by_user_code(user_code)
