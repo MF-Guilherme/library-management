@@ -118,8 +118,12 @@ class BookController():
 
 
 class UserController():
-    def __init__(self) -> None:
-        self.db = []
+    def __init__(self) -> None:    
+        self.conn = get_connection()
+        if self.conn is not None:
+            self.cursor = self.conn.cursor()
+        else:
+            raise Exception("Failed to establish database connection")
 
     def validate_empty_fields(self, name, email, phone, user_code):
         if not name or not email or not phone or not user_code:
