@@ -141,8 +141,8 @@ class UserController():
         if not phone.isnumeric():
             raise ValueError(
                 "Not registered! Phone field must contain just numbers")
-        if not user_code.isnumeric():
-            raise ValueError(
+        if type(user_code) is not int :
+            raise TypeError(
                 "Not registered! User code field must contain just numbers")
 
     def validate_len_phone(self, phone):
@@ -166,6 +166,7 @@ class UserController():
             raise DuplicateError(user_code, entity="User")
         with self.conn:
             with self.conn.cursor() as cursor:
+                self.validate_user_fields(name, email, phone, user_code)
                 query = "INSERT INTO users (name, email, phone, user_code) VALUES (%s, %s, %s, %s);"
                 cursor.execute(query, (name, email, phone, user_code, ))
         return "Success! User registered."
