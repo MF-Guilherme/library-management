@@ -175,10 +175,14 @@ class UserController():
         return self.db
 
     def find_by_user_code(self, user_code):
-        for user in self.db:
-            if user.user_code == user_code:
-                return user
-        return None
+        query = "SELECT * FROM users WHERE user_code = %s"
+        with self.conn:
+            with self.conn.cursor() as cursor:
+                user = cursor.execute(query, user_code).fetchone()
+        if user:
+            return user
+        else:
+            return None
 
     def delete_user(self, user_code):
         user = self.find_by_user_code(user_code)
