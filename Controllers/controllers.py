@@ -197,10 +197,11 @@ class UserController():
             return None
         else:
             self.validate_user_fields(name, email, phone, user_code)
-            if name:
-                user.name = name
-            if email:
-                user.email = email
-            if phone:
-                user.phone = phone
+            query = ("""
+                 UPDATE users SET (name, email, phone) = (%s, %s, %s)
+                 WHERE user_code = %s;
+                 """)
+            with self.conn:
+                with self.conn.cursor() as cursor:
+                    cursor.execute(query, (name, email, phone, user_code))
             return True
