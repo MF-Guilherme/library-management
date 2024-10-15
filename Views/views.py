@@ -40,7 +40,6 @@ def show_menu():
         print('-' * 85)
     return ipt, choice
 
-
 def get_book_infos():
     title = input("Book title: ")
     author = input("Author: ")
@@ -49,7 +48,6 @@ def get_book_infos():
     code = input("ISBN code: ")
     print('-' * 85)
     return title, author, year, genre, code
-
 
 def book_register(controller):
     try:
@@ -61,7 +59,6 @@ def book_register(controller):
     except DuplicateError as e:
         print(f'Error: {e}')
 
-
 def show_books(controller):
     books = controller.list_all_books()
     if books:
@@ -71,7 +68,6 @@ def show_books(controller):
             print(f'ISBN Code: {book[5]:<13} | Title: {book[1]:<20} | Author: {book[2]:<20} |')
     else:
         print('There are no books registered yet')
-
 
 def search_book(controller):
     ipt_code = input('Enter the book ISBN code: ')
@@ -84,7 +80,6 @@ def search_book(controller):
     else:
         print('Book not found')
 
-
 def delete_book(controller):
     ipt_code = input('Enter the ISBN code of the book you want to delete: ')
     print('-' * 85)
@@ -92,7 +87,6 @@ def delete_book(controller):
         print("ISBN code doesn't exists.")
     else:
         print("Book deleted.")
-
 
 def update_book(controller):
     try:
@@ -115,7 +109,6 @@ def update_book(controller):
         print(f"An unexpected error occurred: {e}")
 # USER VIEWS
 
-
 def get_user_infos():
     name = input("Name: ")
     email = input("E-mail: ")
@@ -123,7 +116,6 @@ def get_user_infos():
     user_code = input("User code: ")
     print('-' * 85)
     return name, email, phone, user_code
-
 
 def user_register(controller):
     try:
@@ -140,7 +132,6 @@ def user_register(controller):
         print(f'Error: {e}')
     except Exception as e:
         print(f"Error {e}")
-
 
 def show_users(controller):
     try:
@@ -169,26 +160,30 @@ def search_user(controller):
             print(f"Error: {e}")
 
 def delete_user(controller):
-    ipt_code = input('Enter the user code you want to delete: ')
-    print('-' * 85)
-    if not controller.delete_user(ipt_code):
-        print("User not found.")
-    else:
-        print("User deleted.")
-
+    try:
+        ipt_code = input('Enter the user code you want to delete: ')
+        print('-' * 85)
+        if not controller.delete_user(ipt_code):
+            print("User not found.")
+        else:
+            print("User deleted.")
+    except Exception as e:
+        print(f'Error {e}')
 
 def update_user(controller):
-    ipt_code = input('Enter the user code you want to update: ')
-    print('-' * 85)
-    user = controller.find_by_user_code(ipt_code)
-    if user:
-        new_name = prompt("Name: ", default=user.name).strip() or user.name
-        new_email = prompt(
-            "E-mail: ", default=user.email).strip() or user.email
-        new_phone = prompt(
-            "Phone number: ", default=user.phone).strip() or user.phone
+    try:
+        ipt_code = int(input('Enter the user code you want to update: '))
         print('-' * 85)
-        controller.update_user(ipt_code, new_name, new_email, new_phone)
-        print('User updated')
-    else:
-        print("User not found")
+        user = controller.find_by_user_code(ipt_code)
+        if user:
+            new_name = prompt("Name: ", default=user[1]).strip() or user[1]
+            new_email = prompt("E-mail: ", default=user[2]).strip() or user[2]
+            new_phone = prompt("Phone number: ", default=user[3]).strip() or user[3]
+            print('-' * 85)
+            controller.update_user(ipt_code, new_name, new_email, new_phone)
+            print('User updated')
+        else:
+            print("User not found")
+    except ValueError:
+        print('-' * 85)
+        print('User code must contain just numbers')
