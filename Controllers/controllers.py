@@ -177,14 +177,17 @@ class UserController():
         query = "SELECT * FROM users WHERE user_code = %s;"
         with self.conn:
             with self.conn.cursor() as cursor:
-                cursor.execute(query, user_code)
+                cursor.execute(query, (user_code, ))
                 user = cursor.fetchone()
         return user
 
     def delete_user(self, user_code):
         user = self.find_by_user_code(user_code)
         if user:
-            self.db.remove(user)
+            query = "DELETE FROM users WHERE user_code = %s;"
+            with self.conn:
+                with self.conn.cursor() as cursor:
+                    cursor.execute(query, (user_code, ))
             return True
         return False
 
@@ -194,10 +197,11 @@ class UserController():
             return None
         else:
             self.validate_user_fields(name, email, phone, user_code)
-            if name:
-                user.name = name
-            if email:
-                user.email = email
-            if phone:
-                user.phone = phone
+            query = ("""
+                 UPDATE users SET (name, email, phone) = (%s, %s, %s)
+                 WHERE user_code = %s;
+                 """)
+            with self.conn:
+                with self.conn.cursor() as cursor:
+                    cursor.execute(query, (name, email, phone, user_code))
             return True

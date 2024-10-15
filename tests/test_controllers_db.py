@@ -464,7 +464,7 @@ class TestUserController(unittest.TestCase):
         
         result = controller.find_by_user_code(1000)
 
-        mock_cursor.execute.assert_called_once_with("SELECT * FROM users WHERE user_code = %s;", 1000)
+        mock_cursor.execute.assert_called_once_with("SELECT * FROM users WHERE user_code = %s;", (1000, ))
         self.assertEqual(result, expected_result)
 
     @patch("Controllers.controllers.get_connection")
@@ -481,42 +481,70 @@ class TestUserController(unittest.TestCase):
         controller = UserController()
 
         result = controller.find_by_user_code(789123)
-        mock_cursor.execute.assert_called_once_with("SELECT * FROM users WHERE user_code = %s;", 789123)
+        mock_cursor.execute.assert_called_once_with("SELECT * FROM users WHERE user_code = %s;", (789123, ))
         self.assertIsNone(result)
 
-#     def test_delete_user(self, setup_user):
-#         delete_code = '1000'
-#         assert setup_user.find_by_user_code(delete_code) in setup_user.db
-#         assert setup_user.delete_user(delete_code) is True
-#         assert setup_user.find_by_user_code(delete_code) not in setup_user.db
+    @patch("Controllers.controllers.UserController.find_by_user_code")
+    @patch("Controllers.controllers.get_connection")
+    def test_delete_user(self, mock_get_connection, mock_find_by_user_code):
+        mock_conn = MagicMock()
+        mock_cursor = MagicMock()
+
+        mock_conn.__enter__.return_value = mock_conn
+        mock_conn.cursor.return_value.__enter__.return_value = mock_cursor
+
+        expected_result = MagicMock()
+
+        mock_get_connection.return_value = mock_conn    
+        mock_find_by_user_code.return_value = expected_result
+
+        controller = UserController()
+
+        result = controller.delete_user(1000)
+
+        mock_cursor.execute.assert_called_once_with("DELETE FROM users WHERE user_code = %s;", (1000, ))
+        self.assertTrue(result)
+
+    @patch("Controllers.controllers.UserController.find_by_user_code")
+    def test_delete_user_returns_false_if_user_code_doesnt_exists(self, mock_find_by_user_code):
+
+        mock_find_by_user_code.return_value = False
+
+        controller = UserController()
+
+        result = controller.delete_user(97864216)
+
+        self.assertFalse(result)
+
+    @patch('Controllers.controllers.get_connection')
+    @patch('Controllers.controllers.UserController.find_by_user_code')
+    def test_update_user(self, mock_find_by_user_code, mock_get_connection):
+        mock_conn = MagicMock()
+        mock_cursor = MagicMock()
+
+        mock_conn.__enter__.return_value = mock_conn
+        mock_conn.cursor.return_value.__enter__.return_value = mock_cursor
+
+        expected_result = MagicMock()
+
+        mock_get_connection.return_value = mock_conn    
+        mock_find_by_user_code.return_value = expected_result
+
+        controller = UserController()
+
+        result = controller.update_user(2000, 'Updated Name', 'updated@email.com', '11444477777')
+
+        mock_cursor.execute.assert_called_once_with("""
+                 UPDATE users SET (name, email, phone) = (%s, %s, %s)
+                 WHERE user_code = %s;
+                 """, ('Updated Name', 'updated@email.com', '11444477777', 2000, ))
+        self.assertTrue(result)
+
+    @patch("Controllers.controllers.UserController.find_by_user_code")
+    def test_update_user_returns_none_when_doesnt_find_the_searched_user(self, mock_find_by_user_code):
+        mock_find_by_user_code.return_value = None
+        controller = UserController()
+        result = controller.update_user(2000, 'Updated Name', 'updated@email.com', '11444477777')
+        self.assertIsNone(result)
+
     
-#     def test_delete_user_returns_false_if_user_code_doesnt_exists(self, setup_user):
-#         delete_code = '123456'
-#         assert setup_user.delete_user(delete_code) is False
-
-#     def test_update_user(self, setup_user):
-#         user = setup_user.find_by_user_code('1000')
-#         update_return = setup_user.update_user(user.user_code, 'Updated name', 'updatedemail@test.com', '11777775555')
-#         updated_user = setup_user.find_by_user_code('1000')
-
-#         assert update_return is True
-#         assert updated_user.name == 'Updated name'
-#         assert updated_user.email == 'updatedemail@test.com'
-#         assert updated_user.phone == '11777775555'
-
-#     @pytest.mark.parametrize(
-#         "user_code, name, email, phone",
-#         [
-#             ('1000', '123456', 'updatedemail@test.com','11999994444'),  # name numeric
-#             ('1001', 'Update Name', '123456','11999994444'),  # email numeric
-#             ('1000', 'Update Name', 'updatedemail','phone123456'),  # phone non numeric
-#             ('1001', '', 'updatedemail','phone123456'),  # name empty
-#         ]
-#     )
-#     def test_update_user_raises_value_error_when_a_field_fails_in_data_validation(self, setup_user, user_code, name, email, phone):
-#         with pytest.raises(ValueError):
-#             setup_user.update_user(user_code, name, email, phone)
-
-#     def test_update_user_returns_none_when_doesnt_find_the_searched_user(self, setup_user):
-#         update_return = setup_user.update_user('999999')  # non-existent user code
-#         assert update_return is None
