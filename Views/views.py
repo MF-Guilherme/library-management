@@ -1,6 +1,7 @@
 from Controllers.controllers import BookController, UserController
 from Exceptions.exceptions import DuplicateError, EmailFormatError, LenOfPhoneError
 from prompt_toolkit import prompt
+import psycopg2
 
 book_controller = BookController()
 user_controller = UserController()
@@ -54,39 +55,64 @@ def book_register(controller):
         title, author, year, genre, code = get_book_infos()
         ret = controller.add_book(title, author, year, genre, code)
         print(ret)
+    except psycopg2.Error as db_error:  
+        print(f"Database error: {db_error}")
     except ValueError as e:
         print(f'Error: {e}')
     except DuplicateError as e:
         print(f'Error: {e}')
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
 
 def show_books(controller):
-    books = controller.list_all_books()
-    if books:
-        print("All books list:")
-        print()
-        for book in sorted(books, reverse=True):
-            print(f'ISBN Code: {book[5]:<13} | Title: {book[1]:<20} | Author: {book[2]:<20} |')
-    else:
-        print('There are no books registered yet')
+    try:
+        books = controller.list_all_books()
+        if books:
+            print("All books list:")
+            print()
+            for book in sorted(books, reverse=True):
+                print(f'ISBN Code: {book[5]:<13} | Title: {book[1]:<20} | Author: {book[2]:<20} |')
+        else:
+            print('There are no books registered yet')
+    except psycopg2.Error as db_error:  
+        print(f"Database error: {db_error}")
+    except ValueError as e:
+        print(f"Error: {e}")
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
 
 def search_book(controller):
-    ipt_code = input('Enter the book ISBN code: ')
-    print('-' * 85)
-    book = controller.search_by_book_code(ipt_code)
-    if book:
-        print('Book found:\n')
-        print(f'ISBN Code: {book[5]} | Title: {book[1]} | Author: {book[2]} | Publication year: {book[3]} | Genre: {book[4]}')
+    try:
+        ipt_code = input('Enter the book ISBN code: ')
+        print('-' * 85)
+        book = controller.search_by_book_code(ipt_code)
+        if book:
+            print('Book found:\n')
+            print(f'ISBN Code: {book[5]} | Title: {book[1]} | Author: {book[2]} | Publication year: {book[3]} | Genre: {book[4]}')
 
-    else:
-        print('Book not found')
+        else:
+            print('Book not found')
+    except psycopg2.Error as db_error:  
+        print(f"Database error: {db_error}")
+    except ValueError as e:
+        print(f"Error: {e}")
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
 
 def delete_book(controller):
-    ipt_code = input('Enter the ISBN code of the book you want to delete: ')
-    print('-' * 85)
-    if not controller.delete_book(ipt_code):
-        print("ISBN code doesn't exists.")
-    else:
-        print("Book deleted.")
+    try:
+        ipt_code = input('Enter the ISBN code of the book you want to delete: ')
+        print('-' * 85)
+        if not controller.delete_book(ipt_code):
+            print("ISBN code doesn't exists.")
+        else:
+            print("Book deleted.")
+    except psycopg2.Error as db_error:  
+        print(f"Database error: {db_error}")
+    except ValueError as e:
+        print(f"Error: {e}")
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
 
 def update_book(controller):
     try:
@@ -103,6 +129,8 @@ def update_book(controller):
                 print('Book updated')
         else:
             print("Book not found")
+    except psycopg2.Error as db_error:  
+        print(f"Database error: {db_error}")
     except ValueError as e:
         print(f"Error: {e}")
     except Exception as e:
@@ -122,6 +150,8 @@ def user_register(controller):
         name, email, phone, user_code = get_user_infos()
         controller.register_user(name, email, phone, user_code)
         print('User registered!')
+    except psycopg2.Error as db_error:
+        print(f"Database error: {db_error}")
     except ValueError as e:
         print(f'Error: {e}')
     except EmailFormatError as e:
@@ -141,6 +171,8 @@ def show_users(controller):
                 print(f'User code: {user[4]:<6} | Name: {user[1]:<30} | Email: {user[2]:<20} |')
         else:
             print('There are no users registered yet')
+    except psycopg2.Error as db_error:  
+        print(f"Database error: {db_error}")
     except Exception as e:
         print(f"Error: {e}")
 
@@ -156,6 +188,8 @@ def search_user(controller):
                 print(f'User code: {user[4]} | Name: {user[1]} | Email: {user[2]} | Phone number: {user[3]}')
             else:
                 print('User not found')
+        except psycopg2.Error as db_error:
+            print(f"Database error: {db_error}")
         except Exception as e:
             print(f"Error: {e}")
 
@@ -167,6 +201,8 @@ def delete_user(controller):
             print("User not found.")
         else:
             print("User deleted.")
+    except psycopg2.Error as db_error:
+        print(f"Database error: {db_error}")
     except Exception as e:
         print(f'Error {e}')
 
@@ -184,6 +220,8 @@ def update_user(controller):
             print('User updated')
         else:
             print("User not found")
+    except psycopg2.Error as db_error:
+        print(f"Database error: {db_error}")
     except ValueError:
         print('-' * 85)
         print('User code must contain just numbers')
