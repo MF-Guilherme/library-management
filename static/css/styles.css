@@ -1,0 +1,31 @@
+.card-img-top{
+    width: 200px;
+    height: 250px;
+    object-fit: cover;
+}
+
+.card{
+    width: 202px;
+}
+
+.card-body{
+    padding: 6px;
+}
+
+.card-title{
+    font-weight: bold; 
+    font-size: 16px;
+}
+
+.card-bold{
+    font-weight: bold; 
+    font-size: 14px;
+}
+
+.card-text{
+    font-size: 14px;
+}
+
+.margin-card-body{
+    margin-bottom: 2px;
+}

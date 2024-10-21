@@ -1,0 +1,30 @@
+{% extends 'base_generic.html' %}
+
+{% block content %}
+
+<div class="row row-cols-1 row-cols-md-5 g-4">
+{% for book in books %}
+    <div class="col">
+        <div class="card">
+            <img src="https://dummyimage.com/200x250/786f78/fff.png&text=200x250" class="card-img-top" alt="...">
+            <div class="card-body">
+                <p class="card-title padding-card">{{book}}</p>
+                <div>
+                    <spam class="card-bold margin-card-body">Author: </spam>
+                    <spam class="card-text">{{book.author}}</spam>                    
+                </div>
+                <div>
+                    <spam class="card-bold margin-card-body">Publicação: </spam>
+                    <spam class="card-text">{{book.year}}</spam>
+                </div>
+                <div>
+                    <spam class="card-bold margin-card-body">ISBN: </spam>
+                    <spam class="card-text">{{book.isbn}}</spam>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endfor %}
+</div>
+
+{% endblock content %}
