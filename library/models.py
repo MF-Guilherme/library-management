@@ -1,5 +1,6 @@
 from django.db import models
 from users.models import User
+from django.conf import settings
 
 class Book(models.Model):
     title = models.CharField(max_length=255)
@@ -13,7 +14,7 @@ class Book(models.Model):
         return  self.title
 
 class Loan(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     loan_date = models.DateTimeField(auto_now_add=True)
     return_date = models.DateField()
