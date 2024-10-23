@@ -1,0 +1,81 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+
+<h2 class="text-center">Cadastro de Livros</h2>
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="row">
+        <div class="col-md-4 mb-3">
+            <label for="book_title" class="form-label">Título</label>
+            {{ form.title }}
+            {% if form.title.errors %}
+                <div class="text-danger">
+                    {{ form.title.errors }}
+                </div>
+            {% endif %}
+        </div>
+        <div class="col-md-4 mb-3">
+            <label for="book_author" class="form-label">Autor</label>
+            {{ form.author }}
+            {% if form.author.errors %}
+                <div class="text-danger">
+                    {{ form.author.errors }}
+                </div>
+            {% endif %}
+        </div>
+        <div class="col-md-4 mb-3">
+            <label for="book_genre" class="form-label">Gênero Literário</label>
+            {{ form.genre }}
+            {% if form.genre.errors %}
+                <div class="text-danger">
+                    {{ form.genre.errors }}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4 mb-3">
+            <label for="book_year" class="form-label">Ano de publicação</label>
+            {{ form.year }}
+            {% if form.year.errors %}
+                <div class="text-danger">
+                    {{ form.year.errors }}
+                </div>
+            {% endif %}
+        </div>
+        <div class="col-md-4 mb-3">
+            <label for="book_isbn" class="form-label">Código ISBN</label>
+            {{ form.isbn }}
+            {% if form.isbn.errors %}
+                <div class="text-danger">
+                    {{ form.isbn.errors }}
+                </div>
+            {% endif %}
+        </div>
+        <div class="col-md-4 mb-3">
+            <label for="book_cover" class="form-label">Capa do livro</label>
+            {{ form.cover_image }}
+            {% if form.cover_image.errors %}
+                <div class="text-danger">
+                    {{ form.cover_image.errors }}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    <div class="mb-3">
+        <label for="book_synopsis" class="form-label">Sinopse</label>
+        {{ form.synopsis }}
+        {% if form.synopsis.errors %}
+            <div class="text-danger">
+                {{ form.synopsis.errors }}
+            </div>
+        {% endif %}
+    </div>
+    <div class="mb-3 form-check">
+        {{ form.avaible }} 
+        <label class="form-check-label" for="book_avaible">Disponível</label>
+    </div>
+    <button type="submit" class="btn btn-primary">Cadastrar</button>
+</form>
+{% endblock content %}

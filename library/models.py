@@ -10,6 +10,7 @@ class Book(models.Model):
     isbn = models.CharField(max_length=13, unique=True)
     avaible = models.BooleanField(default=True)
     cover_image = models.ImageField(upload_to='book_covers/', blank=True, null=True)
+    synopsis = models.TextField(null=True, blank=True)
     def __str__(self):
         return  self.title
 
