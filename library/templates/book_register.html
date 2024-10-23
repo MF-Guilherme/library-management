@@ -1,45 +1,81 @@
 {% extends "base_generic.html" %}
 
-<!-- title, author, year, genre, isbn, cover_image -->
 {% block content %}
-<form method="POST" enctype="multipart/form-data"> {% csrf_token %}
+
+<h2 class="text-center">Cadastro de Livros</h2>
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
     <div class="row">
-        <div class="col mb-3">
+        <div class="col-md-4 mb-3">
             <label for="book_title" class="form-label">Título</label>
-            <input type="text" class="form-control" id="book_title" name="title">
+            {{ form.title }}
+            {% if form.title.errors %}
+                <div class="text-danger">
+                    {{ form.title.errors }}
+                </div>
+            {% endif %}
         </div>
-        <div class="col mb-3">
+        <div class="col-md-4 mb-3">
             <label for="book_author" class="form-label">Autor</label>
-            <input type="text" class="form-control" id="book_author" name="author">
+            {{ form.author }}
+            {% if form.author.errors %}
+                <div class="text-danger">
+                    {{ form.author.errors }}
+                </div>
+            {% endif %}
         </div>
-        <div class="col mb-3">
+        <div class="col-md-4 mb-3">
             <label for="book_genre" class="form-label">Gênero Literário</label>
-            <input type="text" class="form-control" id="book_genre" name="genre">
+            {{ form.genre }}
+            {% if form.genre.errors %}
+                <div class="text-danger">
+                    {{ form.genre.errors }}
+                </div>
+            {% endif %}
         </div>
     </div>
     <div class="row">
-        <div class="col mb-3">
+        <div class="col-md-4 mb-3">
             <label for="book_year" class="form-label">Ano de publicação</label>
-            <input type="text" class="form-control" id="book_year" name="year">
+            {{ form.year }}
+            {% if form.year.errors %}
+                <div class="text-danger">
+                    {{ form.year.errors }}
+                </div>
+            {% endif %}
         </div>
-        <div class="col mb-3">
+        <div class="col-md-4 mb-3">
             <label for="book_isbn" class="form-label">Código ISBN</label>
-            <input type="text" class="form-control" id="book_isbn" name="isbn">
+            {{ form.isbn }}
+            {% if form.isbn.errors %}
+                <div class="text-danger">
+                    {{ form.isbn.errors }}
+                </div>
+            {% endif %}
         </div>
-        <div class="col mb-3">
+        <div class="col-md-4 mb-3">
             <label for="book_cover" class="form-label">Capa do livro</label>
-            <input class="form-control" type="file" id="book_cover" name="book_cover">
+            {{ form.cover_image }}
+            {% if form.cover_image.errors %}
+                <div class="text-danger">
+                    {{ form.cover_image.errors }}
+                </div>
+            {% endif %}
         </div>
-    </div> 
-    <div class="input-group mb-3">
-        <span class="input-group-text">Sinopse</span>
-        <textarea class="form-control" aria-label="With textarea" name="synopsis"></textarea>
+    </div>
+    <div class="mb-3">
+        <label for="book_synopsis" class="form-label">Sinopse</label>
+        {{ form.synopsis }}
+        {% if form.synopsis.errors %}
+            <div class="text-danger">
+                {{ form.synopsis.errors }}
+            </div>
+        {% endif %}
     </div>
     <div class="mb-3 form-check">
-        <input type="checkbox" class="form-check-input" id="book_avaible" name="book_avaible">
+        {{ form.avaible }} 
         <label class="form-check-label" for="book_avaible">Disponível</label>
     </div>
     <button type="submit" class="btn btn-primary">Cadastrar</button>
 </form>
-
 {% endblock content %}

@@ -138,7 +138,7 @@ LOGOUT_REDIRECT_URL = '/accounts/login'
 
 MESSAGE_TAGS = {
     constants.DEBUG: 'alert-debug',
-    constants.ERROR: 'alert-error',
+    constants.ERROR: 'alert-danger',
     constants.INFO: 'alert-info',
     constants.SUCCESS: 'alert-success',
     constants.WARNING: 'alert-warning',
