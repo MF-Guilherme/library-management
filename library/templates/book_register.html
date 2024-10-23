@@ -1,0 +1,45 @@
+{% extends "base_generic.html" %}
+
+<!-- title, author, year, genre, isbn, cover_image -->
+{% block content %}
+<form method="POST" enctype="multipart/form-data"> {% csrf_token %}
+    <div class="row">
+        <div class="col mb-3">
+            <label for="book_title" class="form-label">Título</label>
+            <input type="text" class="form-control" id="book_title" name="title">
+        </div>
+        <div class="col mb-3">
+            <label for="book_author" class="form-label">Autor</label>
+            <input type="text" class="form-control" id="book_author" name="author">
+        </div>
+        <div class="col mb-3">
+            <label for="book_genre" class="form-label">Gênero Literário</label>
+            <input type="text" class="form-control" id="book_genre" name="genre">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col mb-3">
+            <label for="book_year" class="form-label">Ano de publicação</label>
+            <input type="text" class="form-control" id="book_year" name="year">
+        </div>
+        <div class="col mb-3">
+            <label for="book_isbn" class="form-label">Código ISBN</label>
+            <input type="text" class="form-control" id="book_isbn" name="isbn">
+        </div>
+        <div class="col mb-3">
+            <label for="book_cover" class="form-label">Capa do livro</label>
+            <input class="form-control" type="file" id="book_cover" name="book_cover">
+        </div>
+    </div> 
+    <div class="input-group mb-3">
+        <span class="input-group-text">Sinopse</span>
+        <textarea class="form-control" aria-label="With textarea" name="synopsis"></textarea>
+    </div>
+    <div class="mb-3 form-check">
+        <input type="checkbox" class="form-check-input" id="book_avaible" name="book_avaible">
+        <label class="form-check-label" for="book_avaible">Disponível</label>
+    </div>
+    <button type="submit" class="btn btn-primary">Cadastrar</button>
+</form>
+
+{% endblock content %}

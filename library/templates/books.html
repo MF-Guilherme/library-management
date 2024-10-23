@@ -1,7 +1,9 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-    <table class="table table-hover">
+
+    <a class="btn btn-primary" href="{% url "library:book_register" %}">Cadastrar novo livro</a>
+    <table class="table table-hover mt-3">
         <thead class="table-light text-center">
             <th>Título</th>
             <th>Autor</th>
