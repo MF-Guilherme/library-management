@@ -1,7 +1,10 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
+from django.views.generic import CreateView
 from django.contrib import messages
 from django.contrib.messages import constants
+from django.urls import reverse_lazy
+from django.db import transaction
 from .models import Book
 from .forms import BookForm
 
@@ -16,17 +19,14 @@ def get_books_info(request):
         books = Book.objects.all()
         return render(request, 'books.html', {'books': books})
 
-def book_register(request):
-    if request.method == 'POST':
-        form = BookForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Livro cadastrado com sucesso!')
-            return redirect('/')
-        else:
-            messages.error(request, 'Erro ao cadastrar o livro. Verifique os campos.')
-    else:
-        form = BookForm()
 
-    return render(request, 'book_register.html', {'form': form})
-        
+class BookCreateView(CreateView):
+    model = Book
+    form_class = BookForm
+    template_name = 'book_register.html'
+    success_url = reverse_lazy('book_register')
+    
+    @transaction.atomic
+    def form_valid(self, form):
+        messages.add_message(self.request, constants.SUCCESS, 'Livro cadastrado com sucesso!')
+        return super().form_valid(form)
