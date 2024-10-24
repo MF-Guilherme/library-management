@@ -1,0 +1,39 @@
+{% extends 'base_generic.html' %}
+
+{% block content %}
+<div class="container mt-4 d-flex justify-content-center">
+    <div class="card" style="max-width: 800px; width: 100%;">
+        <div class="row g-0">
+            <!-- Informações do livro -->
+            <div class="col-md-8 p-3">
+                <h2>{{ book.title }}</h2>
+                <p><strong>Autor:</strong> {{ book.author }}</p>
+                <p><strong>Gênero:</strong> {{ book.genre }}</p>
+                <p><strong>Ano de publicação:</strong> {{ book.year }}</p>
+                <p><strong>ISBN:</strong> {{ book.isbn }}</p>
+                <p><strong>Disponível:</strong> {{ book.avaible|yesno:"Sim,Não" }}</p>
+                
+                <!-- Botões de Editar e Deletar -->
+                <div class="mt-3">
+                    <a href="#" class="btn btn-primary">Editar</a>
+                    <a href="#" class="btn btn-danger">Excluir</a>
+                </div>
+            </div>
+
+            <!-- Capa do livro -->
+            <div class="col-md-4 p-3">
+                <img src="{{ book.cover_image.url }}" class="img-fluid" alt="Capa de {{ book.title }}" style="height: 100%; object-fit: cover;">
+            </div>
+        </div>
+
+        <!-- Sinopse abaixo de tudo -->
+        <div class="row mt-4">
+            <div class="col-md-12 p-3">
+                <h3>Sinopse</h3>
+                <p>{{ book.synopsis }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
