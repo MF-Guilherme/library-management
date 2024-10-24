@@ -1,0 +1,11 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h2>Tem certeza de que deseja excluir o livro "{{ object.title }}"?</h2>
+
+  <form method="POST"> 
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Excluir</button>
+    <a href="{% url 'library:book_detail' book.id%}" class="btn btn-secondary">Cancelar</a>
+  </form>
+{% endblock %}
