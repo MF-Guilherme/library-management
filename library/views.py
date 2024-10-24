@@ -11,7 +11,7 @@ from .forms import BookForm
 
 def home(request):
     if request.method == 'GET':
-        books = Book.objects.all()
+        books = Book.objects.all().order_by('-id')
         return render(request, 'home.html', {'books': books})
     
 def get_books_info(request):
@@ -24,7 +24,7 @@ class BookCreateView(CreateView):
     model = Book
     form_class = BookForm
     template_name = 'book_register.html'
-    success_url = reverse_lazy('book_register')
+    success_url = reverse_lazy('library:home')
     
     @transaction.atomic
     def form_valid(self, form):
