@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.views.generic import CreateView, DetailView, DeleteView
+from django.views.generic.list import ListView
 from django.contrib import messages
 from django.contrib.messages import constants
 from django.urls import reverse_lazy
@@ -9,15 +10,14 @@ from .models import Book
 from .forms import BookForm
 
 
-def home(request):
-    if request.method == 'GET':
-        books = Book.objects.all().order_by('-id')
-        return render(request, 'home.html', {'books': books})
-    
-def get_books_info(request):
-    if request.method == 'GET':
-        books = Book.objects.all()
-        return render(request, 'books.html', {'books': books})
+class BookHomeListView(ListView):
+    model = Book    
+    template_name = 'home.html'
+
+
+class BookAdminListView(ListView):
+    model = Book    
+    template_name = 'books.html'
 
 
 class BookCreateView(CreateView):
