@@ -29,3 +29,8 @@
 .margin-card-body{
     margin-bottom: 2px;
 }
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
