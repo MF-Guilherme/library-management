@@ -3,10 +3,14 @@
 {% block content %}
 
 <div class="row row-cols-1 row-cols-md-5 g-4">
-{% for book in books %}
+{% for book in object_list %}
     <div class="col">
         <div class="card">
-            <img src="https://dummyimage.com/200x250/786f78/fff.png&text=200x250" class="card-img-top" alt="...">
+            {% if book.cover_image %}
+                <img src="{{ book.cover_image.url }}" class="card-img-top" alt="Capa de {{ book.title }}">
+            {% else %}
+                <img src="https://dummyimage.com/200x250/787878/fff&text=No+image" class="card-img-top" alt="Capa de {{ book.title }}">
+            {% endif %}
             <div class="card-body">
                 <p class="card-title padding-card">{{book}}</p>
                 <div>

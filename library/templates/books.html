@@ -17,7 +17,7 @@
             <th>Data do empréstimo</th>
             <th>Data de retorno</th>
         </thead>
-        {% for book in books %}
+        {% for book in object_list %}
             <tr class="text-center">
                 <td><a href="{% url "library:book_detail" book.id %}">{{ book.title }}</a></td>
                 <td><a href="{% url "library:book_detail" book.id %}">{{ book.author }}</a></td>

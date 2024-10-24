@@ -17,11 +17,15 @@
                     <a href="{% url "library:delete_book" book.id %}" class="btn btn-danger">Excluir</a>
                 </div>
             </div>
-
-            <!-- Capa do livro -->
-            <div class="col-md-4 p-3">
-                <img src="{{ book.cover_image.url }}" class="img-fluid" alt="Capa de {{ book.title }}" style="height: 100%; object-fit: cover;">
-            </div>
+            {% if book.cover_image %}
+                <div class="col-md-4 p-3">
+                    <img src="{{ book.cover_image.url }}" class="img-fluid" alt="Capa de {{ book.title }}" style="height: 100%; object-fit: cover;">
+                </div>
+            {% else %}
+                <div class="col-md-4 p-3">
+                    <img src="https://dummyimage.com/200x250/787878/fff&text=No+image" class="img-fluid" alt="Capa de {{ book.title }}" style="height: 100%; object-fit: cover;">
+                </div>
+            {% endif %}
         </div>
 
         <!-- Sinopse abaixo de tudo -->
