@@ -1,8 +1,11 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-
-    <a class="btn btn-primary" href="{% url "library:book_register" %}">Cadastrar novo livro</a>
+    <h1 class="text-center">Gerenciameto de Livros</h1>
+    <div class="d-flex justify-content-between align-items-end">
+        <span><i>* Selecione um livro para editar</i></span>
+        <a class="btn btn-primary" href="{% url "library:book_register" %}">Cadastrar novo livro</a>
+    </div>
     <table class="table table-hover mt-3">
         <thead class="table-light text-center">
             <th>Título</th>
@@ -15,16 +18,16 @@
             <th>Data de retorno</th>
         </thead>
         {% for book in books %}
-        <tr class="text-center">
-            <td>{{book}}</td>
-            <td>{{book.author}}</td>
-            <td>{{book.year}}</td>
-            <td>{{book.genre}}</td>
-            <td>{{book.isbn}}</td>
-            <td>Indisponível</td>
-            <td>14/10/2024</td>
-            <td>31/10/2024</td>
-        </tr>
+            <tr class="text-center">
+                <td><a href="{% url "library:book_detail" book.id %}">{{ book.title }}</a></td>
+                <td><a href="{% url "library:book_detail" book.id %}">{{ book.author }}</a></td>
+                <td><a href="{% url "library:book_detail" book.id %}">{{ book.year }}</a></td>
+                <td><a href="{% url "library:book_detail" book.id %}">{{ book.genre }}</a></td>
+                <td><a href="{% url "library:book_detail" book.id %}">{{ book.isbn }}</a></td>
+                <td><a href="{% url "library:book_detail" book.id %}">Indisponível</a></td>
+                <td><a href="{% url "library:book_detail" book.id %}">14/10/2024</a></td>
+                <td><a href="{% url "library:book_detail" book.id %}">31/10/2024</a></td>
+            </tr>
         {% endfor %}
     </table>
 {% endblock content %}
