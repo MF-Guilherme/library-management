@@ -1,0 +1,12 @@
+<div>
+    {{ widget.label_tag }}  <!-- Renderiza o label do campo -->
+    
+    {% if widget.value %}
+        <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="{{ widget.attrs.id }}-clear" name="cover_image-clear">
+            <label class="form-check-label" for="{{ widget.attrs.id }}-clear">Remover imagem</label>
+        </div>
+    {% endif %}
+    
+    <input type="file" name="{{ widget.name }}" id="{{ widget.attrs.id }}" class="form-control" accept="image/*">  <!-- Renderiza o campo de upload de arquivo -->
+</div>

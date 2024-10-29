@@ -13,7 +13,7 @@
                 <p><strong>Disponível:</strong> {{ book.avaible|yesno:"Sim,Não" }}</p>
                 
                 <div class="mt-3">
-                    <a href="#" class="btn btn-primary">Editar</a>
+                    <a href="{% url "library:update_book" book.id %}" class="btn btn-primary">Editar</a>
                     <a href="{% url "library:delete_book" book.id %}" class="btn btn-danger">Excluir</a>
                 </div>
             </div>

@@ -2,6 +2,21 @@ from django import forms
 from .models import Book
 from datetime import datetime
 
+
+class CustomClearableFileInput(forms.ClearableFileInput):
+    template_name = 'custom_clearable_file_input.html'
+
+    def get_context(self, name, value, attrs):
+        context = super().get_context(name, value, attrs)
+        # Remove o texto inicial
+        context['initial_text'] = ''  # Não exibir texto "Atualmente"
+        return context
+
+    def render(self, name, value, attrs=None, renderer=None):
+        # Renderiza o campo como um arquivo de upload
+        return super().render(name, value, attrs, renderer)
+
+
 class BookForm(forms.ModelForm):
     class Meta:
         model = Book
@@ -13,7 +28,7 @@ class BookForm(forms.ModelForm):
             'genre': forms.TextInput(attrs={'class': 'form-control', 'id': 'book_genre'}),
             'year': forms.TextInput(attrs={'class': 'form-control', 'id': 'book_year'}),
             'isbn': forms.TextInput(attrs={'class': 'form-control', 'id': 'book_isbn'}),
-            'cover_image': forms.ClearableFileInput(attrs={'class': 'form-control', 'id': 'book_cover'}),
+            'cover_image': CustomClearableFileInput(attrs={'class': 'form-control', 'id': 'book_cover', 'clear_checkbox_name': 'cover_image-clear'}),
             'synopsis': forms.Textarea(attrs={'class': 'form-control', 'aria-label': 'With textarea'}),
             'avaible': forms.CheckboxInput(attrs={'class': 'form-check-input', 'id': 'book_avaible'}),
         }
@@ -45,10 +60,20 @@ class BookForm(forms.ModelForm):
         isbn = self.cleaned_data.get('isbn')
         if not isbn.isnumeric():
             raise forms.ValidationError("O código ISBN deve conter apenas números.")
-        if Book.objects.filter(isbn=isbn).exists():
-            raise forms.ValidationError("Este ISBN já está cadastrado para outro livro.")
+
+        # Se estamos no contexto de atualização, o objeto terá um ID (pk)
+        if self.instance.pk:
+            # Verificando se existe outro livro com o mesmo ISBN
+            if Book.objects.filter(isbn=isbn).exclude(pk=self.instance.pk).exists():
+                raise forms.ValidationError("Este ISBN já está cadastrado para outro livro.")
+        else:
+            # Para novos objetos, verifica normalmente
+            if Book.objects.filter(isbn=isbn).exists():
+                raise forms.ValidationError("Este ISBN já está cadastrado para outro livro.")
+        
         return isbn
-    
+
+        
     def clean_genre(self):
         genre = self.cleaned_data.get('genre')
         if genre.isnumeric():
