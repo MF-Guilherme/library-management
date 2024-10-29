@@ -1,0 +1,14 @@
+{% extends 'base_generic.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Remover Livro do Carrinho</h2>
+    <p>Você tem certeza que deseja remover o livro <strong>{{ book.title }}</strong> do seu carrinho de empréstimo?</p>
+    
+    <form method="post" action="{% url 'library:remove_from_cart' book.id %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Remover</button>
+        <a href="{% url 'library:loan_cart' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+{% endblock %}
