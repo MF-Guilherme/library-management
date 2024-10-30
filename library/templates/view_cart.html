@@ -1,0 +1,37 @@
+{% extends 'base_generic.html' %}
+
+{% block content %}
+<div class="container mt-5" style="max-width: 800px; text-align: center">
+    {% if books %}
+    <h2>Seu Carrinho de Empréstimo:</h2>
+        <ul class="list-group mx-auto">
+            {% for book in books %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    {% if book.cover_image %}
+                        <img src="{{ book.cover_image.url }}" class="img-fluid" alt="Capa de {{ book.title }}" style="height: 70px; width: 50px; object-fit: cover;">
+                    {% else %}
+                        <img src="https://dummyimage.com/50x70/787878/fff.png&text=No+image" class="card-img-fluid" alt="Capa de {{ book.title }} style="height: 70px; width: 50px; object-fit: cover;"">
+                    {% endif %}
+                    <span>
+                        <strong>{{ book.title }}</strong> - {{ book.author }}
+                    </span>
+                    <a href="{% url 'library:remove_from_cart' book.id %}" class="btn btn-warning btn-sm">
+                        Remover
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+        
+        <div class="mt-4">
+            <form method="post" action="{% url 'library:finalize_loan' %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-success">Finalizar Empréstimo</button>
+                <a href="{% url 'library:home' %}" class="btn btn-secondary">Continuar Navegando</a>
+            </form>
+        </div>
+    {% else %}
+        <p>Seu carrinho está vazio.</p>
+        <a href="{% url 'library:home' %}" class="btn btn-primary">Voltar aos Livros</a>
+    {% endif %}
+</div>
+{% endblock %}

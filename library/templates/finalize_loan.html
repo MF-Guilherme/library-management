@@ -1,0 +1,10 @@
+{% extends 'base_generic.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Empréstimo Finalizado</h2>
+    <p>O empréstimo dos livros foi processado com sucesso!</p>
+    <a href="{% url 'library:books' %}" class="btn btn-primary">Voltar aos Livros</a>
+    <a href="{% url 'library:my_loans' %}" class="btn btn-secondary">Ver Meus Empréstimos</a>
+</div>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+<h2>Seus Empréstimos</h2>
+<table class="table table-hover mt-3">
+    <thead class="table-light text-center">
+        <th>Título</th>
+        <th>Autor</th>
+        <th>ISBN</th>
+        <th>Data do empréstimo</th>
+        <th>Data de retorno</th>
+        <th>Status</th>
+    </thead>
+    {% for loan in loans %}
+        <tr class="text-center">
+            <td><a style="color: inherit" href="{% url "library:book_detail" loan.book.id %}">{{ loan.book.title }}</a></td>
+            <td><a style="color: inherit" href="{% url "library:book_detail" loan.book.id %}">{{ loan.book.author }}</a></td>
+            <td><a style="color: inherit" href="{% url "library:book_detail" loan.book.id %}">{{ loan.book.isbn }}</a></td>
+            <td><a style="color: inherit" href="{% url "library:book_detail" loan.book.id %}">{{ loan.loan_date }}</a></td>
+            <td><a style="color: inherit" href="{% url "library:book_detail" loan.book.id %}">{{ loan.return_date }}</a></td>
+            {% if not loan.returned %}
+                <td><a style="color: inherit" href="{% url "library:book_detail" loan.book.id %}">Não devolvido</a></td>
+            {% else %}
+                <td><a style="color: inherit" href="{% url "library:book_detail" loan.book.id %}">Devolvido</a></td>
+            {% endif %}
+        </tr>
+    {% endfor %}
+</table>
+{% endblock %}

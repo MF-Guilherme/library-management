@@ -5,27 +5,29 @@
 <div class="row row-cols-1 row-cols-md-5 g-4">
 {% for book in object_list %}
     <div class="col">
-        <div class="card">
-            {% if book.cover_image %}
-                <img src="{{ book.cover_image.url }}" class="card-img-top" alt="Capa de {{ book.title }}">
-            {% else %}
-                <img src="https://dummyimage.com/200x250/787878/fff&text=No+image" class="card-img-top" alt="Capa de {{ book.title }}">
-            {% endif %}
-            <div class="card-body">
-                <p class="card-title padding-card">{{book}}</p>
-                <div>
-                    <spam class="card-bold margin-card-body">Author: </spam>
-                    <spam class="card-text">{{book.author}}</spam>                    
+        <div class="card card-transition">
+            <a style="color: inherit" href="{% url "library:book_detail" book.pk %}">
+                {% if book.cover_image %}
+                    <img src="{{ book.cover_image.url }}" class="card-img-top" alt="Capa de {{ book.title }}">
+                {% else %}
+                    <img src="https://dummyimage.com/200x250/787878/fff&text=No+image" class="card-img-top" alt="Capa de {{ book.title }}">
+                {% endif %}
+                <div class="card-body">
+                    <p class="card-title padding-card">{{book}}</p>
+                    <div>
+                        <spam class="card-bold margin-card-body">Author: </spam>
+                        <spam class="card-text">{{book.author}}</spam>                    
+                    </div>
+                    <div>
+                        <spam class="card-bold margin-card-body">Publicação: </spam>
+                        <spam class="card-text">{{book.year}}</spam>
+                    </div>
+                    <div>
+                        <spam class="card-bold margin-card-body">ISBN: </spam>
+                        <spam class="card-text">{{book.isbn}}</spam>
+                    </div>
                 </div>
-                <div>
-                    <spam class="card-bold margin-card-body">Publicação: </spam>
-                    <spam class="card-text">{{book.year}}</spam>
-                </div>
-                <div>
-                    <spam class="card-bold margin-card-body">ISBN: </spam>
-                    <spam class="card-text">{{book.isbn}}</spam>
-                </div>
-            </div>
+            </a>
         </div>
     </div>
 {% endfor %}

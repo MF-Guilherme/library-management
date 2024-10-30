@@ -13,8 +13,12 @@
                 <p><strong>Disponível:</strong> {{ book.avaible|yesno:"Sim,Não" }}</p>
                 
                 <div class="mt-3">
-                    <a href="{% url "library:update_book" book.id %}" class="btn btn-primary">Editar</a>
-                    <a href="{% url "library:delete_book" book.id %}" class="btn btn-danger">Excluir</a>
+                    {% if user.is_staff %}
+                        <a href="{% url "library:update_book" book.id %}" class="btn btn-primary">Editar</a>
+                        <a href="{% url "library:delete_book" book.id %}" class="btn btn-danger">Excluir</a>
+                    {% else %}
+                        <a href="{% url "library:add_to_cart" book.id%}" class="btn btn-success">Adicionar ao carrinho</a>
+                    {% endif %}
                 </div>
             </div>
             {% if book.cover_image %}
@@ -29,7 +33,7 @@
         </div>
 
         <!-- Sinopse abaixo de tudo -->
-        <div class="row mt-4">
+        <div class="container row mt-4">
             <div class="col-md-12 p-3">
                 <h3>Sinopse</h3>
                 <p>{{ book.synopsis }}</p>

@@ -1,41 +1,73 @@
+{% load static %}
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
-      <a class="navbar-brand" href="/">My Library</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav">
-          <li class="nav-item">
-            <a class="nav-link" href="{% url "library:books" %}">Livros</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Usuários</a>
-          </li>
-        </ul>
+        <!-- Logo da Biblioteca -->
+        <a class="navbar-brand" href="{% url 'library:home' %}">My Library</a>
         
-        <!-- Alinha os itens de autenticação à direita -->
-        <ul class="navbar-nav ms-auto">
-          {% if user.is_authenticated %}
-            <li class="nav-item">
-                <form method="POST" action="{% url 'logout' %}">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-danger">Logout</button>
-                </form>
-            </li>
-          {% else %}
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'login' %}">Login</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'signup' %}">Signup</a>
-            </li>
-          {% endif %}
-        </ul>
-      </div>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <!-- Se o usuário estiver autenticado -->
+            {% if user.is_authenticated %}
+                <ul class="navbar-nav me-auto">
+                    <!-- Links para usuários staff -->
+                    {% if user.is_staff %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'library:books' %}">Livros</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Usuários</a>
+                        </li>
+                    {% endif %}
+                </ul>
+                
+                <ul class="navbar-nav ms-auto">
+                    <!-- Links específicos para usuários não-staff -->
+                    {% if not user.is_staff %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'library:loans' %}">Meus Empréstimos</a>
+                        </li>
+                        <li class="nav-item position-relative">
+                            <a class="nav-link" href="{% url 'library:view_cart' %}">
+                                <img src="{% static 'icons/cart.png' %}" alt="Carrinho" style="width: 24px; height: 24px;">
+                                
+                                <!-- Badge com a quantidade de itens no carrinho -->
+                                {% if request.session.loan_cart %}
+                                    <span class="position-absolute top-10 start-80 translate-middle badge rounded-pill bg-danger">
+                                        {{ request.session.loan_cart|length }}
+                                    </span>
+                                {% endif %}
+                            </a>
+                        </li>
+                    {% else %}
+                        <!-- Link para staff -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Livros Emprestados</a>
+                        </li>
+                    {% endif %}
+                    
+                    <!-- Botão de logout para usuários autenticados -->
+                    <li class="nav-item">
+                        <form method="POST" action="{% url 'logout' %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger ms-3">Logout</button>
+                        </form>
+                    </li>
+                </ul>
+                
+            <!-- Se o usuário não estiver autenticado -->
+            {% else %}
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'login' %}">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'signup' %}">Signup</a>
+                    </li>
+                </ul>
+            {% endif %}
+        </div>
     </div>
-  </nav>
-
-
-  
+</nav>

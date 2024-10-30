@@ -1,11 +1,23 @@
+a {
+    text-decoration: none;
+    color: black;
+}
+
+
+.card-transition{
+    width: 202px;
+    transition: transform 0.2s, box-shadow 0.2s; /* Animação suave para transformação e sombra */
+}
+
+.card-transition:hover {
+    transform: scale(1.05); /* Efeito de zoom */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Sombra ao passar o mouse */
+}
+
 .card-img-top{
     width: 200px;
     height: 250px;
     object-fit: cover;
-}
-
-.card{
-    width: 202px;
 }
 
 .card-body{
@@ -28,9 +40,4 @@
 
 .margin-card-body{
     margin-bottom: 2px;
-}
-
-a {
-    text-decoration: none;
-    color: inherit;
 }
