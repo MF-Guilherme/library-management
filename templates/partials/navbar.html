@@ -35,7 +35,7 @@
                                 
                                 <!-- Badge com a quantidade de itens no carrinho -->
                                 {% if request.session.loan_cart %}
-                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                    <span class="position-absolute top-10 start-80 translate-middle badge rounded-pill bg-danger">
                                         {{ request.session.loan_cart|length }}
                                     </span>
                                 {% endif %}

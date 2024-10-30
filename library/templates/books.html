@@ -19,14 +19,14 @@
         </thead>
         {% for book in object_list %}
             <tr class="text-center">
-                <td><a href="{% url "library:book_detail" book.id %}">{{ book.title }}</a></td>
-                <td><a href="{% url "library:book_detail" book.id %}">{{ book.author }}</a></td>
-                <td><a href="{% url "library:book_detail" book.id %}">{{ book.year }}</a></td>
-                <td><a href="{% url "library:book_detail" book.id %}">{{ book.genre }}</a></td>
-                <td><a href="{% url "library:book_detail" book.id %}">{{ book.isbn }}</a></td>
-                <td><a href="{% url "library:book_detail" book.id %}">Indisponível</a></td>
-                <td><a href="{% url "library:book_detail" book.id %}">14/10/2024</a></td>
-                <td><a href="{% url "library:book_detail" book.id %}">31/10/2024</a></td>
+                <td><a style="color: inherit" href="{% url "library:book_detail" book.id %}">{{ book.title }}</a></td>
+                <td><a style="color: inherit" href="{% url "library:book_detail" book.id %}">{{ book.author }}</a></td>
+                <td><a style="color: inherit" href="{% url "library:book_detail" book.id %}">{{ book.year }}</a></td>
+                <td><a style="color: inherit" href="{% url "library:book_detail" book.id %}">{{ book.genre }}</a></td>
+                <td><a style="color: inherit" href="{% url "library:book_detail" book.id %}">{{ book.isbn }}</a></td>
+                <td><a style="color: inherit" href="{% url "library:book_detail" book.id %}">Indisponível</a></td>
+                <td><a style="color: inherit" href="{% url "library:book_detail" book.id %}">14/10/2024</a></td>
+                <td><a style="color: inherit" href="{% url "library:book_detail" book.id %}">31/10/2024</a></td>
             </tr>
         {% endfor %}
     </table>

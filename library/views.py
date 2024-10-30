@@ -1,10 +1,11 @@
-from django.views.generic import CreateView, DetailView, DeleteView, UpdateView
-from django.views.generic.list import ListView
+from django.shortcuts import render, redirect, get_object_or_404
+from django.views.generic import CreateView, DetailView, DeleteView, UpdateView, ListView
 from django.contrib import messages
 from django.contrib.messages import constants
 from django.urls import reverse_lazy
+from django.utils import timezone
 from django.db import transaction
-from .models import Book
+from .models import Book, Loan
 from .forms import BookForm
 
 
@@ -64,4 +65,54 @@ class BookUpdateView(UpdateView):
         messages.add_message(self.request, constants.SUCCESS, 'Livro atualizado com sucesso!')
         return super().form_valid(form)
 
-   
+
+def add_to_cart(request, book_id):
+    cart = request.session.get('loan_cart', [])
+    if book_id not in cart:
+        cart.append(book_id)
+        request.session['loan_cart'] = cart
+        messages.success(request, "Livro adicionado ao carrinho.")
+    else:
+        messages.warning(request, "Este livro já está no seu carrinho.")
+
+    return redirect('library:book_detail', pk=book_id)
+
+def view_cart(request):
+    cart = request.session.get('loan_cart', [])
+    books = Book.objects.filter(id__in=cart)
+    return render(request, 'view_cart.html', {'books': books})
+
+def remove_from_cart(request, book_id):
+    cart = request.session.get('loan_cart', [])
+    if book_id in cart:
+        cart.remove(book_id)
+        request.session['loan_cart'] = cart
+        messages.success(request, "Livro removido do carrinho de empréstimo.")
+    return redirect('library:view_cart')
+
+from django.utils import timezone
+
+def finalize_loan(request):
+    loan_days = 7
+    cart = request.session.get('loan_cart', [])
+    if cart:
+        for book_id in cart:
+            Loan.objects.create(
+                user=request.user,
+                book_id=book_id,
+                return_date=timezone.now() + timezone.timedelta(days=loan_days),  # prazo de devolução
+            )
+        request.session['loan_cart'] = []  # Limpa o carrinho após finalizar o empréstimo
+        messages.success(request, "Empréstimo finalizado com sucesso!")
+    else:
+        messages.warning(request, "Seu carrinho de empréstimo está vazio.")
+    
+    return redirect('library:loans')
+
+
+def my_loans(request):
+    loans = Loan.objects.filter(user=request.user)
+    print(loans[0].book.author)
+    return render(request, 'loan_list.html', {'loans': loans})
+
+

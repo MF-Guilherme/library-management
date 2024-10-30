@@ -14,6 +14,12 @@ urlpatterns = [
     path('library/book/<int:pk>/', BookDetailView.as_view(), name='book_detail'),
     path('library/book/delete/<int:pk>', BookDeleteView.as_view(), name='delete_book'),
     path('library/book/update/<int:pk>', BookUpdateView.as_view(), name='update_book'),
+
+    path('library/view_cart/', views.view_cart, name='view_cart'),
+    path('library/book/add-to-cart/<int:book_id>/', views.add_to_cart, name="add_to_cart"),
+    path('library/book/remove_from_cart/<int:book_id>/', views.remove_from_cart, name='remove_from_cart'),
+    path('library/loan/finalize/', views.finalize_loan, name='finalize_loan'),
+    path('library/my_loans/', views.my_loans, name='loans'),
 ]
 
 if settings.DEBUG:
