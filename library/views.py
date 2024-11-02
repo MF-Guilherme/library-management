@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import CreateView, DetailView, DeleteView, UpdateView, ListView
 from django.contrib import messages
 from django.contrib.messages import constants
+from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
+from django.core.exceptions import PermissionDenied
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.db import transaction
@@ -14,9 +16,23 @@ class BookHomeListView(ListView):
     template_name = 'home.html'
 
 
-class BookAdminListView(ListView):
+class BookAdminListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     model = Book    
     template_name = 'books.html'
+    login_url = reverse_lazy('login')  # Certifique-se de que essa URL é válida para login
+    raise_exception = False
+
+    def test_func(self):
+        return self.request.user.is_staff
+
+    def handle_no_permission(self):
+        # Redireciona para a tela de login se o usuário não estiver autenticado
+        if not self.request.user.is_authenticated:
+            messages.warning(self.request, "Por favor, faça login como administrador para acessar esta página")
+            return redirect(self.get_login_url())
+        # Lança um erro 403 apenas se o usuário não for staff
+        messages.warning(self.request, "Você não tem permissão para acessar esta página")
+        return redirect('/')  # Aqui redireciona para a home ou outra página de sua preferência.
 
 
 class BookCreateView(CreateView):
