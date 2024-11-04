@@ -24,6 +24,9 @@
                 </ul>
                 
                 <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link disabled">{{user}}</a>
+                    </li>
                     <!-- Links específicos para usuários não-staff -->
                     {% if not user.is_staff %}
                         <li class="nav-item">
@@ -35,7 +38,7 @@
                                 
                                 <!-- Badge com a quantidade de itens no carrinho -->
                                 {% if request.session.loan_cart %}
-                                    <span class="position-absolute top-10 start-80 translate-middle badge rounded-pill bg-danger">
+                                    <span class="position-absolute top-0 start-90 translate-middle badge rounded-pill bg-danger mt-1">
                                         {{ request.session.loan_cart|length }}
                                     </span>
                                 {% endif %}
