@@ -39,14 +39,14 @@ class BookAdminListView(UserPassesTestMixin, ListView):
         return redirect('/')  # Aqui redireciona para a home ou outra página de sua preferência.
     
     def get_queryset(self):
-        return Book.objects.order_by('avaible', 'title')
+        return Book.objects.order_by('-id')
   
 
 class BookCreateView(UserPassesTestMixin, CreateView):
     model = Book
     form_class = BookForm
     template_name = 'book_register.html'
-    success_url = reverse_lazy('library:home')
+    success_url = reverse_lazy('library:books')
     
     def test_func(self):
         return self.request.user.is_staff
