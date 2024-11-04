@@ -7,6 +7,7 @@ from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.db import transaction
+from django.db.models import Max
 from .models import Book, Loan
 from .forms import BookForm
 
@@ -14,6 +15,9 @@ from .forms import BookForm
 class BookHomeListView(LoginRequiredMixin, ListView):
     model = Book    
     template_name = 'home.html'
+
+    def get_queryset(self):
+        return Book.objects.filter(avaible=True).order_by('title')
 
 
 class BookAdminListView(UserPassesTestMixin, ListView):
@@ -33,7 +37,10 @@ class BookAdminListView(UserPassesTestMixin, ListView):
         # Lança um erro 403 apenas se o usuário não for staff
         messages.warning(self.request, "Você não tem permissão para acessar esta página")
         return redirect('/')  # Aqui redireciona para a home ou outra página de sua preferência.
-
+    
+    def get_queryset(self):
+        return Book.objects.order_by('avaible', 'title')
+  
 
 class BookCreateView(UserPassesTestMixin, CreateView):
     model = Book
@@ -156,7 +163,10 @@ def finalize_loan(request):
                 user=request.user,
                 book_id=book_id,
                 return_date=timezone.now() + timezone.timedelta(days=loan_days),  # prazo de devolução
+                returned=False
             )
+            Book.objects.filter(id=book_id).update(avaible=False)
+            
         request.session['loan_cart'] = []  # Limpa o carrinho após finalizar o empréstimo
         messages.success(request, "Empréstimo finalizado com sucesso!")
     else:

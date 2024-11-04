@@ -1,7 +1,7 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-    <h1 class="text-center">Gerenciameto de Livros</h1>
+    <h1 class="text-center">Gerenciamento de Livros</h1>
     <div class="d-flex justify-content-between align-items-end">
         <span><i>* Selecione um livro para editar</i></span>
         <a class="btn btn-primary" href="{% url "library:book_register" %}">Cadastrar novo livro</a>
@@ -24,11 +24,36 @@
                 <td><a style="color: inherit" href="{% url "library:book_detail" book.id %}">{{ book.year }}</a></td>
                 <td><a style="color: inherit" href="{% url "library:book_detail" book.id %}">{{ book.genre }}</a></td>
                 <td><a style="color: inherit" href="{% url "library:book_detail" book.id %}">{{ book.isbn }}</a></td>
-                <td><a style="color: inherit" href="{% url "library:book_detail" book.id %}">Indisponível</a></td>
-                <td><a style="color: inherit" href="{% url "library:book_detail" book.id %}">14/10/2024</a></td>
-                <td><a style="color: inherit" href="{% url "library:book_detail" book.id %}">31/10/2024</a></td>
+                <td>
+                    {% if not book.avaible %}
+                        Indisponível
+                    {% else %}
+                        Disponível
+                    {% endif %}
+                </td>
+                <td>
+                    {% if book.loan_set.count > 0 %}
+                        {% for loan in book.loan_set.all %}
+                            {% if not loan.returned %}
+                                {{ loan.loan_date|date:"d/m/Y" }}<br>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+                <td>
+                    {% if book.loan_set.count > 0 %}
+                        {% for loan in book.loan_set.all %}
+                            {% if not loan.returned %}
+                                {{ loan.return_date|date:"d/m/Y" }}<br>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
             </tr>
         {% endfor %}
     </table>
 {% endblock content %}
-

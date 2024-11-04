@@ -11,6 +11,7 @@ class Book(models.Model):
     avaible = models.BooleanField(default=True)
     cover_image = models.ImageField(upload_to='book_covers/', blank=True, null=True)
     synopsis = models.TextField(null=True, blank=True)
+
     def __str__(self):
         return  self.title
 
@@ -19,4 +20,7 @@ class Loan(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     loan_date = models.DateTimeField(auto_now_add=True)
     return_date = models.DateField()
-    returned = models.BooleanField(default=False)
+    returned = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.book.title
