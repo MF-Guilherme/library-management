@@ -176,7 +176,7 @@ def finalize_loan(request):
 
 @login_required
 def my_loans(request):
-    loans = Loan.objects.filter(user=request.user)
+    loans = Loan.objects.filter(user=request.user).order_by('-loan_date')
     print(loans[0].book.author)
     return render(request, 'loan_list.html', {'loans': loans})
 

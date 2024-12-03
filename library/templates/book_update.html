@@ -78,7 +78,7 @@
             <label class="form-check-label" for="book_avaible">Disponível</label>
         </div>
         <button type="submit" class="btn btn-primary">Salvar Alterações</button>
-        <a href="{% url 'library:books' %}" class="btn btn-secondary">Cancelar</a>
+        <a href="{% url 'library:book_detail' book.id%}" class="btn btn-secondary">Cancelar</a>
     </div>
 </form>
 
