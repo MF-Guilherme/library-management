@@ -42,3 +42,9 @@ a {
 .margin-card-body{
     margin-bottom: 2px;
 }
+
+#searchInput {
+    margin-bottom: 20px;
+    font-size: 16px;
+    padding: 10px;
+}
