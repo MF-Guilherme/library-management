@@ -2,37 +2,44 @@
 
 {% block content %}
 
-<div class="container">
-    <div class="row row-cols-1 row-cols-md-4 g-4 justify-content-center">
-        {% for book in object_list %}
-            <div class="col">
-                <div class="card card-transition mx-auto">
-                    <a style="color: inherit" href="{% url "library:book_detail" book.pk %}">
-                        {% if book.cover_image %}
-                            <img src="{{ book.cover_image.url }}" class="card-img-top" alt="Capa de {{ book.title }}">
-                        {% else %}
-                            <img src="https://dummyimage.com/200x250/787878/fff&text=No+image" class="card-img-top" alt="Capa de {{ book.title }}">
-                        {% endif %}
-                        <div class="card-body">
-                            <p class="card-title padding-card">{{ book }}</p>
-                            <div>
-                                <span class="card-bold margin-card-body">Author: </span>
-                                <span class="card-text">{{ book.author }}</span>                    
-                            </div>
-                            <div>
-                                <span class="card-bold margin-card-body">Publicação: </span>
-                                <span class="card-text">{{ book.year }}</span>
-                            </div>
-                            <div>
-                                <span class="card-bold margin-card-body">ISBN: </span>
-                                <span class="card-text">{{ book.isbn }}</span>
-                            </div>
-                        </div>
-                    </a>
+<div class="container mt-4">
+    <input 
+        type="text" 
+        id="searchInput" 
+        class="form-control" 
+        placeholder="Digite o nome do livro para buscar..." 
+        oninput="performSearch()">
+</div>
+
+<div class="row row-cols-1 row-cols-md-4 g-4 justify-content-center" id="bookGrid">
+    {% for book in object_list %}
+    <div class="col">
+        <div class="card card-transition mx-auto">
+            <a style="color: inherit" href="{% url "library:book_detail" book.pk %}">
+                {% if book.cover_image %}
+                    <img src="{{ book.cover_image.url }}" class="card-img-top" alt="Capa de {{ book.title }}">
+                {% else %}
+                    <img src="https://dummyimage.com/200x250/787878/fff&text=No+image" class="card-img-top" alt="Capa de {{ book.title }}">
+                {% endif %}
+                <div class="card-body">
+                    <p class="card-title padding-card book-title">{{ book }}</p>
+                    <div>
+                        <span class="card-bold margin-card-body">Author: </span>
+                        <span class="card-text">{{ book.author }}</span>                    
+                    </div>
+                    <div>
+                        <span class="card-bold margin-card-body">Publicação: </span>
+                        <span class="card-text">{{ book.year }}</span>
+                    </div>
+                    <div>
+                        <span class="card-bold margin-card-body">ISBN: </span>
+                        <span class="card-text">{{ book.isbn }}</span>
+                    </div>
                 </div>
-            </div>
-        {% endfor %}
+            </a>
+        </div>
     </div>
+    {% endfor %}
 </div>
 
 
@@ -57,5 +64,6 @@
         {% endif %}
     </ul>
 </div>
+
 
 {% endblock content %}

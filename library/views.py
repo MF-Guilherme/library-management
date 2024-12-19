@@ -8,7 +8,8 @@ from django.core.paginator import Paginator
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.db import transaction
-from django.db.models import Max
+from django.db.models import Q
+from django.http import JsonResponse
 from .models import Book, Loan
 from .forms import BookForm
 
@@ -182,4 +183,38 @@ def my_loans(request):
     print(loans[0].book.author)
     return render(request, 'loan_list.html', {'loans': loans})
 
+def search_books(request):
+    query = request.GET.get('query', '').strip()  # Remove espaços extras
+    page_number = request.GET.get('page', 1)  # Página atual ou 1 como padrão
+
+    # Filtra livros com base na disponibilidade
+    books = Book.objects.filter(avaible=True).order_by('title')  # Ordena sempre por título
+
+    # Filtra os livros com base na busca
+    if query:
+        books = books.filter(Q(title__icontains=query) | Q(author__icontains=query))
+
+    # Paginação
+    paginator = Paginator(books, 12)
+    page_obj = paginator.get_page(page_number)
+
+    # Dados para o frontend
+    data = {
+        'books': [
+            {
+                'id': book.id,
+                'title': book.title,
+                'author': book.author,
+                'year': book.year,
+                'isbn': book.isbn,
+                'cover_image': book.cover_image.url if book.cover_image else None,
+            }
+            for book in page_obj
+        ],
+        'has_previous': page_obj.has_previous(),
+        'has_next': page_obj.has_next(),
+        'total_pages': paginator.num_pages,
+        'current_page': page_obj.number,
+    }
+    return JsonResponse(data)
 

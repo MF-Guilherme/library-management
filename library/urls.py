@@ -20,6 +20,8 @@ urlpatterns = [
     path('library/book/remove_from_cart/<int:book_id>/', views.remove_from_cart, name='remove_from_cart'),
     path('library/loan/finalize/', views.finalize_loan, name='finalize_loan'),
     path('library/my_loans/', views.my_loans, name='loans'),
+    
+    path('search_books/', views.search_books, name='search_books'),
 ]
 
 if settings.DEBUG:
