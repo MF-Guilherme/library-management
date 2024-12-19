@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.contrib.messages import constants
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
+from django.core.paginator import Paginator
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.db import transaction
@@ -15,6 +16,7 @@ from .forms import BookForm
 class BookHomeListView(LoginRequiredMixin, ListView):
     model = Book    
     template_name = 'home.html'
+    paginate_by = 12
 
     def get_queryset(self):
         return Book.objects.filter(avaible=True).order_by('title')
