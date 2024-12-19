@@ -2,35 +2,60 @@
 
 {% block content %}
 
-<div class="row row-cols-1 row-cols-md-5 g-4">
-{% for book in object_list %}
-    <div class="col">
-        <div class="card card-transition">
-            <a style="color: inherit" href="{% url "library:book_detail" book.pk %}">
-                {% if book.cover_image %}
-                    <img src="{{ book.cover_image.url }}" class="card-img-top" alt="Capa de {{ book.title }}">
-                {% else %}
-                    <img src="https://dummyimage.com/200x250/787878/fff&text=No+image" class="card-img-top" alt="Capa de {{ book.title }}">
-                {% endif %}
-                <div class="card-body">
-                    <p class="card-title padding-card">{{book}}</p>
-                    <div>
-                        <spam class="card-bold margin-card-body">Author: </spam>
-                        <spam class="card-text">{{book.author}}</spam>                    
-                    </div>
-                    <div>
-                        <spam class="card-bold margin-card-body">Publicação: </spam>
-                        <spam class="card-text">{{book.year}}</spam>
-                    </div>
-                    <div>
-                        <spam class="card-bold margin-card-body">ISBN: </spam>
-                        <spam class="card-text">{{book.isbn}}</spam>
-                    </div>
+<div class="container">
+    <div class="row row-cols-1 row-cols-md-4 g-4 justify-content-center">
+        {% for book in object_list %}
+            <div class="col">
+                <div class="card card-transition mx-auto">
+                    <a style="color: inherit" href="{% url "library:book_detail" book.pk %}">
+                        {% if book.cover_image %}
+                            <img src="{{ book.cover_image.url }}" class="card-img-top" alt="Capa de {{ book.title }}">
+                        {% else %}
+                            <img src="https://dummyimage.com/200x250/787878/fff&text=No+image" class="card-img-top" alt="Capa de {{ book.title }}">
+                        {% endif %}
+                        <div class="card-body">
+                            <p class="card-title padding-card">{{ book }}</p>
+                            <div>
+                                <span class="card-bold margin-card-body">Author: </span>
+                                <span class="card-text">{{ book.author }}</span>                    
+                            </div>
+                            <div>
+                                <span class="card-bold margin-card-body">Publicação: </span>
+                                <span class="card-text">{{ book.year }}</span>
+                            </div>
+                            <div>
+                                <span class="card-bold margin-card-body">ISBN: </span>
+                                <span class="card-text">{{ book.isbn }}</span>
+                            </div>
+                        </div>
+                    </a>
                 </div>
-            </a>
-        </div>
+            </div>
+        {% endfor %}
     </div>
-{% endfor %}
+</div>
+
+
+<div class="d-flex justify-content-center mt-4">
+    <ul class="pagination">
+        {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Anterior</a>
+            </li>
+        {% endif %}
+
+        {% for num in paginator.page_range %}
+            <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+            </li>
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}">Próxima</a>
+            </li>
+        {% endif %}
+    </ul>
 </div>
 
 {% endblock content %}
